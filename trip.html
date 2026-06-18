@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>巴厘岛毕业旅行 · 行程总览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #0f0f1a;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
+  }
+
+  /* ===== SCROLL CONTAINER ===== */
+  .carousel {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    height: 100vh;
+    width: 100%;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* ===== NAV ===== */
+  .nav-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    z-index: 100;
+    padding: 0 20px;
+    flex-wrap: wrap;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+  }
+  .nav-dot.active { background: #fff; width: 24px; border-radius: 4px; }
+  .nav-dot:hover { background: rgba(255,255,255,0.6); }
+
+  .nav-label {
+    position: fixed;
+    bottom: 48px;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 100;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    pointer-events: none;
+  }
+
+  /* ===== COMMON ===== */
+  .slide-inner {
+    min-height: 100vh;
+    padding: 20px 24px 100px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Day badge */
+  .day-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+
+  .slide h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .slide h1 .sub {
+    font-weight: 300;
+    font-size: 0.45em;
+    letter-spacing: 3px;
+    opacity: 0.7;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .slide .date-row {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .tags span {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+  }
+
+  /* Timeline */
+  .tl { display: flex; flex-direction: column; gap: 0; }
+  .tl-row {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    align-items: flex-start;
+  }
+  .tl-row:last-child { border-bottom: none; }
+  .tl-time {
+    width: 64px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding-top: 2px;
+  }
+  .tl-time .sub {
+    font-weight: 400;
+    font-size: 0.6rem;
+    color: #999;
+    display: block;
+  }
+  .tl-icon {
+    width: 24px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    padding-top: 2px;
+  }
+  .tl-content { flex: 1; }
+  .tl-content .name {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #1a1a2e;
+  }
+  .tl-content .name .hl {
+    font-weight: 500;
+    font-size: 0.65rem;
+  }
+  .tl-content .detail {
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .tl-content .detail strong { color: #555; }
+
+  .tl-stickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .tl-stickers span {
+    font-size: 0.55rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+
+  /* Info box */
+  .info-box {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 0.65rem;
+    line-height: 1.6;
+    color: #666;
+  }
+
+  /* Warning box */
+  .warn-box {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 0.65rem;
+    line-height: 1.6;
+  }
+  .warn-box .w-title {
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+  .warn-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .warn-box ul li {
+    padding: 2px 0;
+    font-size: 0.6rem;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    margin: 10px 0;
+  }
+
+  /* Footer tips */
+  .foot-tips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.6rem;
+    line-height: 1.5;
+  }
+  .foot-tips span { opacity: 0.8; }
+
+  /* ===== COVER THEME ===== */
+  .theme-cover { background: #faf6ef; }
+  .theme-cover .slide-inner { justify-content: center; align-items: center; text-align: center; }
+  .theme-cover h1 {
+    font-size: 2.4rem; color: #1a2e2e;
+    letter-spacing: 4px;
+  }
+  .theme-cover h1 .sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.4em;
+    letter-spacing: 6px;
+    opacity: 0.5;
+  }
+  .theme-cover .date-row { color: #999; }
+  .theme-cover .tags span { background: #e8f0ee; color: #2d5a4a; }
+  .theme-cover .cover-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-top: 24px;
+  }
+  .theme-cover .cover-dests {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px 0 20px;
+  }
+  .theme-cover .cover-dests span {
+    font-size: 0.6rem; padding: 4px 12px; border-radius: 20px;
+    background: #e8f0ee; color: #2d5a4a; letter-spacing: 1px;
+  }
+
+  /* ===== DAY THEMES ===== */
+  .theme-day1 { background: linear-gradient(180deg, #faf6ef 0%, #f5e6e2 100%); }
+  .theme-day1 .day-badge { background: #e07a5f; color: #fff; }
+  .theme-day1 h1 { color: #3d405b; }
+  .theme-day1 h1 .sub { color: #3d405b; }
+  .theme-day1 .date-row { color: #999; }
+  .theme-day1 .tl-time { color: #3d405b; }
+  .theme-day1 .tl-content .name .hl { color: #e07a5f; }
+  .theme-day1 .tags span { background: #f5e6e2; color: #c05a3e; }
+  .theme-day1 .tl-stickers span { background: #f5e6e2; color: #c05a3e; }
+  .theme-day1 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day1 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day1 .tl-stickers span.navy { background: #e8eaf0; color: #3d405b; }
+  .theme-day1 .divider { background: linear-gradient(90deg, transparent, #e07a5f, transparent); }
+  .theme-day1 .info-box { background: #f5e6e2; color: #666; }
+  .theme-day1 .info-box strong { color: #3d405b; }
+  .theme-day1 .foot-tips { background: #3d405b; color: rgba(255,255,255,0.7); }
+
+  .theme-day2 { background: linear-gradient(180deg, #faf6ef 0%, #e8f5e9 100%); }
+  .theme-day2 .day-badge { background: #2d5a27; color: #fff; }
+  .theme-day2 h1 { color: #1a1a2e; }
+  .theme-day2 h1 .sub { color: #1a1a2e; }
+  .theme-day2 .date-row { color: #999; }
+  .theme-day2 .tl-time { color: #2d5a27; }
+  .theme-day2 .tl-content .name .hl { color: #c8a96e; }
+  .theme-day2 .tags span { background: #e8f5e9; color: #2d5a27; }
+  .theme-day2 .tl-stickers span { background: #e8f5e9; color: #2d5a27; }
+  .theme-day2 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day2 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day2 .divider { background: linear-gradient(90deg, transparent, #c8a96e, transparent); }
+  .theme-day2 .info-box { background: #e8f5e9; color: #666; }
+  .theme-day2 .info-box strong { color: #2d5a27; }
+  .theme-day2 .foot-tips { background: #1a1a2e; color: rgba(255,255,255,0.7); }
+
+  .theme-day3 { background: linear-gradient(180deg, #faf6ef 0%, #e8eef5 100%); }
+  .theme-day3 .day-badge { background: #0a1a3a; color: #fff; }
+  .theme-day3 h1 { color: #1a1a2e; }
+  .theme-day3 h1 .sub { color: #1a1a2e; }
+  .theme-day3 .date-row { color: #999; }
+  .theme-day3 .tl-time { color: #0a1a3a; }
+  .theme-day3 .tl-content .name .hl { color: #c06952; }
+  .theme-day3 .tags span { background: #e8eef5; color: #0a1a3a; }
+  .theme-day3 .tl-stickers span { background: #e8eef5; color: #0a1a3a; }
+  .theme-day3 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day3 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day3 .tl-stickers span.coral { background: #fde8e3; color: #c05a3e; }
+  .theme-day3 .tl-stickers span.navy { background: #e0e6ef; color: #0a1a3a; }
+  .theme-day3 .divider { background: linear-gradient(90deg, transparent, #c06952, transparent); }
+  .theme-day3 .info-box { background: #eef2f7; color: #666; }
+  .theme-day3 .info-box strong { color: #0a1a3a; }
+  .theme-day3 .warn-box { background: #eef2f7; border: 1.5px solid #c06952; }
+  .theme-day3 .warn-box .w-title { color: #c06952; }
+  .theme-day3 .warn-box ul li::before { content: '·'; color: #c06952; font-weight: 700; margin-right: 4px; }
+  .theme-day3 .foot-tips { background: #0a1a3a; color: rgba(255,255,255,0.7); }
+
+  .theme-day4 { background: linear-gradient(180deg, #faf6ef 0%, #e0f0f2 100%); }
+  .theme-day4 .day-badge { background: #006d77; color: #fff; }
+  .theme-day4 h1 { color: #1a1a2e; }
+  .theme-day4 h1 .sub { color: #1a1a2e; }
+  .theme-day4 .date-row { color: #999; }
+  .theme-day4 .tl-time { color: #006d77; }
+  .theme-day4 .tl-content .name .hl { color: #006d77; }
+  .theme-day4 .tags span { background: #e0f0f2; color: #006d77; }
+  .theme-day4 .tl-stickers span { background: #e0f0f2; color: #006d77; }
+  .theme-day4 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day4 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day4 .tl-stickers span.teal { background: #e0f0f2; color: #006d77; }
+  .theme-day4 .divider { background: linear-gradient(90deg, transparent, #006d77, transparent); }
+  .theme-day4 .info-box { background: #e0f0f2; color: #555; }
+  .theme-day4 .info-box strong { color: #006d77; }
+  .theme-day4 .warn-box { background: #e0f0f2; border: 1.5px solid #006d77; }
+  .theme-day4 .warn-box .w-title { color: #006d77; }
+  .theme-day4 .warn-box ul li::before { content: '·'; color: #006d77; font-weight: 700; margin-right: 4px; }
+  .theme-day4 .foot-tips { background: #006d77; color: rgba(255,255,255,0.85); }
+
+  .theme-day5 { background: linear-gradient(180deg, #faf6ef 0%, #f0ebe5 100%); }
+  .theme-day5 .day-badge { background: #2c1810; color: #fff; }
+  .theme-day5 h1 { color: #1a1a2e; }
+  .theme-day5 h1 .sub { color: #1a1a2e; }
+  .theme-day5 .date-row { color: #999; }
+  .theme-day5 .tl-time { color: #2c1810; }
+  .theme-day5 .tl-content .name .hl { color: #c4956a; }
+  .theme-day5 .tags span { background: #f0ebe5; color: #5a3d2b; }
+  .theme-day5 .tl-stickers span { background: #f0ebe5; color: #5a3d2b; }
+  .theme-day5 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day5 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day5 .divider { background: linear-gradient(90deg, transparent, #c4956a, transparent); }
+  .theme-day5 .info-box { background: #f5f0e8; color: #666; }
+  .theme-day5 .info-box strong { color: #5a3d2b; }
+  .theme-day5 .foot-tips { background: #2c1810; color: rgba(255,255,255,0.7); }
+
+  .theme-day6 { background: linear-gradient(180deg, #faf6ef 0%, #f5ede4 100%); }
+  .theme-day6 .day-badge { background: #6B3A2A; color: #fff; }
+  .theme-day6 h1 { color: #1a1a2e; }
+  .theme-day6 h1 .sub { color: #1a1a2e; }
+  .theme-day6 .date-row { color: #999; }
+  .theme-day6 .tl-time { color: #6B3A2A; }
+  .theme-day6 .tl-content .name .hl { color: #c4956a; }
+  .theme-day6 .tags span { background: #f5ede4; color: #6B3A2A; }
+  .theme-day6 .tl-stickers span { background: #f5ede4; color: #6B3A2A; }
+  .theme-day6 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day6 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day6 .tl-stickers span.warm { background: #f5ede4; color: #6B3A2A; }
+  .theme-day6 .divider { background: linear-gradient(90deg, transparent, #c4956a, transparent); }
+  .theme-day6 .info-box { background: #f5ede4; color: #666; }
+  .theme-day6 .info-box strong { color: #6B3A2A; }
+  .theme-day6 .warn-box { background: #fff8f0; border: 1.5px solid #c0392b; }
+  .theme-day6 .warn-box .w-title { color: #c0392b; }
+  .theme-day6 .warn-box ul li { display: flex; align-items: flex-start; gap: 4px; }
+  .theme-day6 .warn-box .reminder { margin-top: 6px; padding: 6px 8px; background: #fce4ec; border-radius: 6px; font-size: 0.6rem; font-weight: 500; color: #c0392b; }
+  .theme-day6 .foot-tips { background: #6B3A2A; color: rgba(255,255,255,0.85); }
+
+  .theme-day7 { background: linear-gradient(180deg, #faf6ef 0%, #e3eef7 100%); }
+  .theme-day7 .day-badge { background: #2C5F8A; color: #fff; }
+  .theme-day7 h1 { color: #1a1a2e; }
+  .theme-day7 h1 .sub { color: #1a1a2e; }
+  .theme-day7 .date-row { color: #999; }
+  .theme-day7 .tl-time { color: #2C5F8A; }
+  .theme-day7 .tl-content .name .hl { color: #2C5F8A; }
+  .theme-day7 .tags span { background: #e3eef7; color: #2C5F8A; }
+  .theme-day7 .tl-stickers span { background: #e3eef7; color: #2C5F8A; }
+  .theme-day7 .tl-stickers span.gold { background: #fdf6e3; color: #a68a4e; }
+  .theme-day7 .tl-stickers span.red { background: #fce4ec; color: #c0392b; }
+  .theme-day7 .tl-stickers span.blue { background: #e3eef7; color: #2C5F8A; }
+  .theme-day7 .divider { background: linear-gradient(90deg, transparent, #2C5F8A, transparent); }
+  .theme-day7 .info-box { background: #eef5fa; color: #666; }
+  .theme-day7 .info-box strong { color: #2C5F8A; }
+  .theme-day7 .warn-box { background: #f0f7ff; border: 1.5px solid #2C5F8A; }
+  .theme-day7 .warn-box .w-title { color: #2C5F8A; }
+  .theme-day7 .warn-box ul li { display: flex; align-items: flex-start; gap: 4px; }
+  .theme-day7 .warn-box .reminder { margin-top: 6px; padding: 6px 8px; background: #dce8f5; border-radius: 6px; font-size: 0.6rem; font-weight: 500; color: #2C5F8A; }
+  .theme-day7 .foot-tips { background: #2C5F8A; color: rgba(255,255,255,0.85); }
+
+  /* ===== END THEME ===== */
+  .theme-end { background: linear-gradient(180deg, #faf6ef 0%, #e0f0ee 100%); }
+  .theme-end .slide-inner { justify-content: center; align-items: center; text-align: center; }
+  .theme-end .end-icon { font-size: 2.4rem; margin-bottom: 12px; }
+  .theme-end h1 { font-size: 2rem; color: #1a2e2e; letter-spacing: 6px; }
+  .theme-end .date-row { color: #999; }
+  .theme-end .end-msg {
+    font-size: 0.8rem; color: #666; line-height: 2; font-weight: 300;
+    max-width: 320px; margin: 12px auto;
+  }
+  .theme-end .end-msg .hl { color: #2d8a7a; font-weight: 500; }
+  .theme-end .end-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-top: 8px;
+  }
+
+  /* ===== BUDGET LINE ===== */
+  .budget {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #666;
+    padding: 6px 0;
+  }
+  .budget strong { font-weight: 700; }
+  .budget .note { font-size: 0.6rem; color: #bbb; }
+
+  /* ===== ARROW HINT ===== */
+  .swipe-hint {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 99;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border: none;
+    font-size: 1.2rem;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    color: #fff;
+  }
+  .swipe-hint.prev { left: 8px; }
+  .swipe-hint.next { right: 8px; }
+  .carousel:hover + .swipe-hint,
+  .swipe-hint:hover { opacity: 1; }
+
+  /* ===== PRINT ===== */
+  @media print {
+    .nav-bar, .nav-label, .swipe-hint { display: none; }
+    .carousel { display: block; overflow: visible; }
+    .slide { height: auto; min-height: 100vh; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SCROLL CONTAINER -->
+<div class="carousel" id="carousel">
+
+  <!-- ============ COVER ============ -->
+  <div class="slide theme-cover">
+    <div class="slide-inner">
+      <div class="day-badge" style="background:#1a3a3a;color:#fff;opacity:0.7;">BALI · 2025</div>
+      <h1>巴厘岛<br>毕业旅行</h1>
+      <div class="date-row" style="margin-top:6px;">6.18 — 6.23</div>
+      <div class="cover-dests">
+        <span>Ubud</span><span>South Coast</span><span>Nusa Penida</span>
+        <span>AYANA</span><span>Hong Kong</span><span>Beijing</span>
+      </div>
+      <div style="width:30px;height:2px;background:#c8a96e;margin:4px auto 16px;"></div>
+      <div class="tags" style="justify-content:center;">
+        <span>🌊 乌布瀑布</span><span>🎓 梯田毕业照</span><span>🐒 猴林自拍</span>
+        <span>💎 钻石沙滩</span><span>🦖 Kelingking</span><span>🍸 Rock Bar</span>
+        <span>💆 Spa</span><span>✈️ 香港中转</span>
+      </div>
+      <div class="cover-quote">Six Days in Paradise</div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 1 ============ -->
+  <div class="slide theme-day1">
+    <div class="slide-inner">
+      <div class="day-badge">6.18 周四 · Day 1</div>
+      <h1>抵达巴厘岛<div class="sub">机场 · 乌布 · 初到之夜</div></h1>
+      <div class="tags">
+        <span>✈️ 15:00 落地</span><span>🚗 机场→乌布</span><span>🏨 Damara Village</span>
+        <span>🍽️ Balinese Cooking</span><span>🛒 超市</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">15:00<span class="sub">落地</span></div>
+          <div class="tl-icon">✈️</div>
+          <div class="tl-content">
+            <div class="name">抵达 Ngurah Rai 机场</div>
+            <div class="detail">落地巴厘岛！过海关、取行李、办当地电话卡/换汇</div>
+            <div class="tl-stickers"><span class="gold">🛂 落地签</span><span class="navy">换汇</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">16:00–18:00<span class="sub">🚗 ~2h</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">机场 → 乌布</div>
+            <div class="detail">包车前往乌布民宿，车程约 1.5–2 小时（视堵车情况）</div>
+            <div class="tl-stickers"><span class="red">⚠️ 巴厘岛常堵车</span><span>车上可休息</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:00<span class="sub">入住</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">抵达民宿 · Damara Village Ubud</div>
+            <div class="detail">办理入住，放行李，稍作休整</div>
+            <div class="tl-stickers"><span class="navy">住 Damara Village</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time"></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">Balinese Home Cooking 晚餐</div>
+            <div class="detail">享用正宗巴厘岛家常菜</div>
+            <div class="tl-stickers"><span class="gold">正宗巴厘风味</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time"></div>
+          <div class="tl-icon">🛒</div>
+          <div class="tl-content">
+            <div class="name">超市 · 买第二天早餐</div>
+            <div class="detail">去附近超市采购第二天早餐食材</div>
+            <div class="tl-stickers"><span class="navy">🥐 备早餐</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time"></div>
+          <div class="tl-icon">🌙</div>
+          <div class="tl-content">
+            <div class="name">回民宿休息</div>
+            <div class="detail">回到 Damara Village，早点休息，明天乌布一日游！</div>
+            <div class="tl-stickers"><span class="gold">😴 早睡充电</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="budget"><span>💰 全天预估 <strong style="color:#c05a3e;">~300,000 IDR</strong> <span style="color:#999;font-size:0.6rem;">(≈ 138 RMB)</span></span><span class="note">不含交通&晚餐</span></div>
+
+      <div class="foot-tips">
+        <span>📱 装上电话卡</span> · <span>☀️ 注意防晒</span> · <span>💧 喝瓶装水</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 2 ============ -->
+  <div class="slide theme-day2">
+    <div class="slide-inner">
+      <div class="day-badge">6.19 周五 · Day 2</div>
+      <h1>乌布一日<div class="sub">瀑布 · 梯田毕业照 · 猴林自拍 · 乌布中心</div></h1>
+      <div class="tags">
+        <span>🥐 06:50 早餐</span><span>🚗 07:15 出发</span><span>🌊 Tukad Cepung</span>
+        <span>🌴 Alas Harum</span><span>🐒 猴林</span><span>🛍️ 乌布中心</span><span>🍽️ Twist</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">06:50–07:15<span class="sub">🥐 早餐</span></div>
+          <div class="tl-icon">🥐</div>
+          <div class="tl-content">
+            <div class="name">民宿早餐 · 一楼汇合</div>
+            <div class="detail">Damara Village Ubud · 大家一起吃早餐，吃完直接上车</div>
+            <div class="tl-stickers"><span class="red">⏰ 07:15 准时上车</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">07:15–09:00<span class="sub">🚗 ~1h45</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">民宿 → Tukad Cepung 瀑布</div>
+            <div class="detail">按堵车和山路预留时间，不按最快导航算</div>
+            <div class="tl-stickers"><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">09:00–10:20<span class="sub">~1h20</span></div>
+          <div class="tl-icon">🌊</div>
+          <div class="tl-content">
+            <div class="name">Tukad Cepung 瀑布 <span class="hl">· 门票 30K–50K</span></div>
+            <div class="detail">峡谷光束瀑布，下台阶 + 涉水，上午光线最佳<br><strong>10:05 开始往外走，10:20 必须上车</strong></div>
+            <div class="tl-stickers"><span>穿防滑鞋</span><span>带防水袋</span><span class="red">👕 备换衣服</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">10:20–11:30<span class="sub">🚗 ~1h10</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Tukad Cepung → Alas Harum</div>
+            <div class="detail">按堵车和路况保守估计</div>
+            <div class="tl-stickers"><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:30–12:20<span class="sub">~50min</span></div>
+          <div class="tl-icon">🌴</div>
+          <div class="tl-content">
+            <div class="name">Alas Harum 快拍毕业照 <span class="hl">· 门票 70K–200K</span></div>
+            <div class="detail"><strong>目标：</strong>梯田背景毕业照 + 特色装置快速打卡<br>不深度逛，不排长队玩秋千<br><strong style="color:#c0392b;">12:20 必须结束</strong></div>
+            <div class="tl-stickers"><span class="gold">🎓 带毕业服！</span><span class="red">快拍点</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:20–13:25<span class="sub">~65min</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">午餐 <span class="hl">· 30–85 RMB/人</span></div>
+            <div class="detail"><strong>首选：</strong>Alas Harum 园区内 / Cretya Lite<br><strong>备选：</strong>Tebasari Resto<br><strong style="color:#c0392b;">13:30 最晚出发</strong></div>
+            <div class="tl-stickers"><span>预留 65min 好好吃</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">13:30–14:50<span class="sub">🚗 ~1h20</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">午餐点 → Sacred Monkey Forest</div>
+            <div class="detail">按堵车预留 · 司机送到后包车结束，<strong>拿完所有行李下车</strong><br><strong style="color:#c0392b;">15:00 前必须到</strong></div>
+            <div class="tl-stickers"><span class="red">🔔 拿完所有东西下车</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">14:50–16:00<span class="sub">~1h10</span></div>
+          <div class="tl-icon">🐒</div>
+          <div class="tl-content">
+            <div class="name">Sacred Monkey Forest <span class="hl">· 门票 100K–130K</span></div>
+            <div class="detail"><strong>目标：</strong>和猴子自拍<br>收好墨镜、耳环、零食、塑料袋等易被抢物品</div>
+            <div class="tl-stickers"><span class="red">⚠️ 看管好物品</span><span class="gold">工作人员可协助拍照</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">16:00–16:25<span class="sub">🚶 步行</span></div>
+          <div class="tl-icon">🚶</div>
+          <div class="tl-content">
+            <div class="name">猴林 → 乌布中心</div>
+            <div class="detail">此后全程步行 · 前往 Ubud Palace / Art Market 一带</div>
+            <div class="tl-stickers"><span>🚶 全部步行</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">16:25–18:30<span class="sub">~2h</span></div>
+          <div class="tl-icon">🛍️</div>
+          <div class="tl-content">
+            <div class="name">乌布中心 · 皇宫 · 市场</div>
+            <div class="detail"><strong>建议顺序：</strong>先逛市场 → 皇宫快闪（尽量18:00前）→ Saraswati Temple</div>
+            <div class="tl-stickers"><span class="gold">市场从报价30%开始砍</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:30–19:15<span class="sub">前往餐厅</span></div>
+          <div class="tl-icon">🚶</div>
+          <div class="tl-content">
+            <div class="name">前往 Twist 餐厅</div>
+            <div class="detail">从乌布中心走过去或短途打车</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">19:30<span class="sub">晚餐</span></div>
+          <div class="tl-icon">🍖</div>
+          <div class="tl-content">
+            <div class="name">Twist 餐厅 <span class="hl">· 已订位 19:30</span></div>
+            <div class="detail">烤猪排 + 炸玉米花 + 肋排饭<br>餐后打车回民宿 Damara Village Ubud</div>
+            <div class="tl-stickers"><span class="gold">✅ 已预约 19:30</span><span>🚕 打车回民宿</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="budget"><span>💰 全日门票预估 <strong style="color:#2d5a27;">200K–400K IDR/人</strong></span><span class="note">不含交通&餐饮</span></div>
+
+      <div class="foot-tips">
+        <span>🎓 带毕业服</span> · <span>👕 带备用衣服</span> · <span>☀️ 防晒 · 防蚊</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 3 ============ -->
+  <div class="slide theme-day3">
+    <div class="slide-inner">
+      <div class="day-badge">6.20 周六 · Day 3</div>
+      <h1>南部海岸线<div class="sub">Blue Point · 情人崖 · Melasti · GWK · Kisik</div></h1>
+      <div class="tags">
+        <span>🥐 Ubud 早餐</span><span>🚗 07:30 出发</span><span>🏨 AYANA 寄行李</span>
+        <span>🌊 Blue Point</span><span>⛰️ Uluwatu</span><span>🏖️ Melasti</span><span>🦅 GWK 可选</span><span>🍽️ Kisik</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">07:00–07:30<span class="sub">🥐 早餐</span></div>
+          <div class="tl-icon">🥐</div>
+          <div class="tl-content">
+            <div class="name">Ubud 酒店早餐 · 退房</div>
+            <div class="detail">早餐后退房，行李上车<br><strong style="color:#c0392b;">07:30 准时出发</strong></div>
+            <div class="tl-stickers"><span class="red">⏰ 07:30 准时出发</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">07:30–09:30<span class="sub">🚗 ~2h</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Ubud → AYANA</div>
+            <div class="detail">按堵车预留约 2h，不按最快导航算</div>
+            <div class="tl-stickers"><span>长距离转场</span><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">09:30–10:00<span class="sub">寄存</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">AYANA 与卡姐汇合 · 寄存行李</div>
+            <div class="detail">先寄行李、上厕所、整理物品</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">10:00–10:40<span class="sub">🚗 ~40min</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">AYANA → Blue Point</div>
+            <div class="detail">进入 Uluwatu 区域，路可能变窄</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">10:40–11:20<span class="sub">~40min</span></div>
+          <div class="tl-icon">🌊</div>
+          <div class="tl-content">
+            <div class="name">Blue Point / Suluban Beach</div>
+            <div class="detail"><strong>目标：</strong>快拍海景，不下水，不久留</div>
+            <div class="tl-stickers"><span>拍照快闪</span><span>注意台阶和防晒</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:20–11:45<span class="sub">🚗 ~25min</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Blue Point → Uluwatu Temple</div>
+            <div class="detail">短途移动</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:45–12:45<span class="sub">~1h</span></div>
+          <div class="tl-icon">⛰️</div>
+          <div class="tl-content">
+            <div class="name">Uluwatu Temple / 情人崖</div>
+            <div class="detail">经典悬崖海景 + 寺庙点<br><strong style="color:#c0392b;">猴子会抢东西！</strong> 收好墨镜、帽子、耳环、手机</div>
+            <div class="tl-stickers"><span class="gold">南部经典</span><span class="red">🐒 猴子警戒</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:45–13:45<span class="sub">~1h</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">午饭 / 简餐</div>
+            <div class="detail">建议在 Uluwatu 或前往 Melasti 的路上解决</div>
+            <div class="tl-stickers"><span class="red">必须吃午饭</span><span>不然后面很累</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">13:45–14:15<span class="sub">🚗 ~30min</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">午饭点 → Melasti Beach</div>
+            <div class="tl-stickers"><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">14:15–15:20<span class="sub">~1h</span></div>
+          <div class="tl-icon">🏖️</div>
+          <div class="tl-content">
+            <div class="name">Melasti Beach <span class="hl">· 主沙滩点</span></div>
+            <div class="detail">白崖、公路、海滩、海水。可以拍照、踩水<br><strong>提醒：</strong>不要玩太久，后面还有可选点</div>
+            <div class="tl-stickers"><span class="gold">主沙滩点</span><span>白崖海景</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">15:20–15:50<span class="sub">可选</span></div>
+          <div class="tl-icon">🏖️</div>
+          <div class="tl-content">
+            <div class="name">Pandawa 悬崖公路快闪 <span class="hl">· 可选</span></div>
+            <div class="detail">只拍白崖公路，不下沙滩深玩。累了直接删掉</div>
+            <div class="tl-stickers"><span class="navy">可选快闪</span><span class="navy">不深玩</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">15:50–16:20<span class="sub">🚗 ~30min</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Pandawa → GWK</div>
+            <div class="detail"><strong style="color:#c0392b;">16:20 前不到 GWK 就直接删掉回 AYANA</strong></div>
+            <div class="tl-stickers"><span class="red">16:20 判断点</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">16:20–17:10<span class="sub">可选 ~50min</span></div>
+          <div class="tl-icon">🦅</div>
+          <div class="tl-content">
+            <div class="name">GWK 神鹰广场 <span class="hl">· 可选</span></div>
+            <div class="detail">看巨大神鹰雕像和主广场，不深度逛</div>
+            <div class="tl-stickers"><span class="navy">可选文化地标</span><span class="navy">快闪即可</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">17:10–18:00<span class="sub">🚗 回酒店</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">GWK → AYANA</div>
+            <div class="detail">办理入住、取行李、换衣服、休息</div>
+            <div class="tl-stickers"><span class="gold">🏨 回酒店整理</span><span>不要压线</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:00–19:00<span class="sub">休息换装</span></div>
+          <div class="tl-icon">✨</div>
+          <div class="tl-content">
+            <div class="name">AYANA 休息 · 换衣服</div>
+            <div class="detail">整理仪容，提前前往 Kisik</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">19:00/19:30<span class="sub">🍽️ 晚餐</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">Kisik Seafood & Grill <span class="hl">· 建议预约 19:00/19:30</span></div>
+            <div class="detail">AYANA 内海边海鲜晚餐，不硬追日落</div>
+            <div class="tl-stickers"><span class="gold">✅ 提前预约</span><span>海边晚餐</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>📌 备用规则</strong><br>
+        想边吃 Kisik 边看日落 → 改成 <strong>17:30 入座</strong>，删掉 Pandawa 和 GWK
+      </div>
+
+      <div class="divider"></div>
+      <div class="budget"><span>💰 全天预估 <strong style="color:#0a1a3a;">~1,200,000 IDR</strong> <span style="color:#999;font-size:0.6rem;">(≈ 552 RMB)</span></span><span class="note">含门票 · 不含晚餐</span></div>
+
+      <div class="foot-tips">
+        <span>🚗 不要把所有点都当正式景点</span> · <span>⏰ 16:20 不到 GWK 就删</span><br>
+        <span>🏖️ Pandawa/GWK 可选</span> · <span>🐒 Uluwatu 猴子警戒</span><br>
+        <span>👕 防晒 · 墨镜 · 备用衣服</span> · <span>🍽️ Kisik 建议 19:00/19:30</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 4 ============ -->
+  <div class="slide theme-day4">
+    <div class="slide-inner">
+      <div class="day-badge">6.21 周日 · Day 4</div>
+      <h1>佩尼达岛<div class="sub">悬崖 · 碧海 · 白沙滩 · 一日跳岛</div></h1>
+      <div class="tags">
+        <span>🚗 05:45 出发</span><span>⛴️ 07:30 去程</span><span>💎 Diamond Beach</span>
+        <span>🍽️ Eastside 午餐</span><span>🦖 Kelingking</span><span>⛴️ 16:30 回程</span><span>🏨 回 AYANA</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">05:45–06:45<span class="sub">🚗 ~1h</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">AYANA → Sanur 码头</div>
+            <div class="detail">7:30 是船开时间，不是出发时间<br>早起，车上补觉</div>
+            <div class="tl-stickers"><span class="red">早起出发</span><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">06:45–07:20<span class="sub">⛴️ check-in</span></div>
+          <div class="tl-icon">⛴️</div>
+          <div class="tl-content">
+            <div class="name">Sanur 码头 check-in <span class="hl">· 船票已购</span></div>
+            <div class="detail">提前到码头办理登船，可能需要排队换票</div>
+            <div class="tl-stickers"><span class="gold">船票已购</span><span>提前到码头</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">07:30–08:15<span class="sub">⛴️ ~45min</span></div>
+          <div class="tl-icon">⛴️</div>
+          <div class="tl-content">
+            <div class="name">Sanur → Nusa Penida</div>
+            <div class="detail">晕船药提前吃，船上可能颠</div>
+            <div class="tl-stickers"><span class="red">💊 备好晕船药</span><span>多带水</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">08:15–08:30<span class="sub">抵达</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">抵达 Nusa Penida</div>
+            <div class="detail">找到包车司机，确认路线。先上厕所</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">08:30–09:45<span class="sub">🚗 ~1h15</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">码头 → Diamond Beach</div>
+            <div class="detail">岛上路况慢，按 1h+ 预留</div>
+            <div class="tl-stickers"><span>岛上路颠</span><span>预留车程</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">09:45–11:15<span class="sub">~1h30</span></div>
+          <div class="tl-icon">💎</div>
+          <div class="tl-content">
+            <div class="name">Diamond Beach 钻石沙滩</div>
+            <div class="detail"><strong>目标：</strong>拍照打卡、看景，不深度下沙滩玩水</div>
+            <div class="tl-stickers"><span class="gold">📸 热门机位</span><span class="teal">下沙滩很累</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:15–12:00<span class="sub">~45min</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">Eastside Penida Kitchen & Bar</div>
+            <div class="detail">亚洲/印尼风味，海景餐厅。别吃太慢</div>
+            <div class="tl-stickers"><span>午餐补能量</span><span class="teal">别吃太慢</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:00–13:30<span class="sub">🚗 ~1h30</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Diamond Beach → Kelingking</div>
+            <div class="detail">东线横跨西线，路况不稳定</div>
+            <div class="tl-stickers"><span>长车程</span><span>路况慢</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">13:30–14:45<span class="sub">~1h15</span></div>
+          <div class="tl-icon">🦖</div>
+          <div class="tl-content">
+            <div class="name">Kelingking Beach</div>
+            <div class="detail"><strong>目标：</strong>只看观景台、拍照，不下沙滩<br>下沙滩楼梯非常陡且耗时</div>
+            <div class="tl-stickers"><span class="gold">🦖 T-Rex 悬崖</span><span class="teal">不下沙滩</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">14:45–15:45<span class="sub">🚗 ~1h</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Kelingking → 码头</div>
+            <div class="detail"><strong>必须给回程留足时间，不要压线</strong></div>
+            <div class="tl-stickers"><span class="red">返程赶船</span><span>预留堵车时间</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">15:45–16:20<span class="sub">⛴️ 等船</span></div>
+          <div class="tl-icon">⛴️</div>
+          <div class="tl-content">
+            <div class="name">码头 check-in / 等船</div>
+            <div class="detail">上厕所、买水、确认船公司</div>
+            <div class="tl-stickers"><span class="gold">⏰ 准时到码头</span><span>返程休息</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">16:30–17:15<span class="sub">⛴️ ~45min</span></div>
+          <div class="tl-icon">⛴️</div>
+          <div class="tl-content">
+            <div class="name">Nusa Penida → Sanur</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">17:15–18:30<span class="sub">🚗 ~1h15</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">Sanur → AYANA</div>
+            <div class="detail">看当天体力和路况安排晚餐</div>
+            <div class="tl-stickers"><span class="gold">回酒店休息</span><span>不要再排远景点</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time"></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">晚餐 <span class="hl">· 暂时未定</span></div>
+            <div class="detail">建议回 AYANA 附近或酒店内简单吃</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <div class="w-title">📌 备用规则</div>
+        <ul>
+          <li>Diamond 拖到 11:30 后 → 缩短午餐或减少 Kelingking</li>
+          <li>14:45 没从 Kelingking 出发 → 有误船风险，立刻回码头</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+      <div class="budget"><span>💰 全天预估 <strong style="color:#006d77;">~500,000 IDR</strong> <span style="color:#999;font-size:0.6rem;">(≈ 230 RMB)</span></span><span class="note">含船票 · 不含午晚餐</span></div>
+
+      <div class="foot-tips">
+        <span>☀️ 防晒 · 墨镜 · 帽子</span> · <span>💊 晕船药提前吃</span> · <span>💧 多带水</span><br>
+        <span>⛴️ 16:30 回程别迟到</span> · <span>⚠️ Diamond/Kelingking 不下沙滩深玩</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 5 ============ -->
+  <div class="slide theme-day5">
+    <div class="slide-inner">
+      <div class="day-badge">6.22 周一 · Day 5</div>
+      <h1>AYANA 度假日<div class="sub">泳池 · 沙滩 · 博物馆 · Spa · 日落晚餐</div></h1>
+      <div class="tags">
+        <span>🥐 早餐三选一</span><span>🏊 H2O 泳池</span><span>🏖️ Kubu 沙滩</span>
+        <span>🏛️ Saka 博物馆</span><span>💆 Spa 可选</span><span>🍸 Rock Bar 17:00</span><span>🍽️ 甘榜巴厘 18:15</span>
+      </div>
+
+      <div class="info-box">
+        <strong>🥐 早餐三选一（凭房卡）</strong><br>
+        ① Ayana 大堂 · <strong>Padi</strong> → 必点：Roti Tissue<br>
+        ② Rimba 大堂 · <strong>Toge</strong> → 必点：船面<br>
+        ③ Segara 大堂 · <strong>Karang</strong> → 必点：绿色蔬菜汁
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">自由安排</div>
+          <div class="tl-icon">🥐</div>
+          <div class="tl-content">
+            <div class="name">Ayana 早餐</div>
+            <div class="detail">Padi / Toge / Karang 三选一，接驳车前往</div>
+            <div class="tl-stickers"><span class="gold">Padi：Roti Tissue</span><span class="gold">Toge：船面</span><span class="gold">Karang：绿色蔬菜汁</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">自由安排</div>
+          <div class="tl-icon">🍕</div>
+          <div class="tl-content">
+            <div class="name">午餐 <span class="hl">· 暂时未定</span></div>
+            <div class="detail">可选 Sami Sami 意大利菜或其他 Ayana 餐厅</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">17:00<span class="sub">已预约</span></div>
+          <div class="tl-icon">🍸</div>
+          <div class="tl-content">
+            <div class="name">Rock Bar <span class="hl">· 已预约 17:00</span></div>
+            <div class="detail">悬崖岩石上的世界级酒吧，日落绝佳位置</div>
+            <div class="tl-stickers"><span class="gold">✅ 已预约 17:00</span><span>🌅 日落时分</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:15<span class="sub">已预约</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">甘榜巴厘岛文化餐厅 <span class="hl">· 已预约</span></div>
+            <div class="detail">巴厘岛传统文化表演与美食</div>
+            <div class="tl-stickers"><span class="gold">✅ 已预约 18:15</span><span>文化表演</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="info-box">
+        <strong>🏖️ 园内自由活动推荐</strong><br>
+        ① Kubu 沙滩 · 9:00–18:00 · 接驳车→Kubu<br>
+        ② 无边泳池 · Ocean Beach / Ayana Main Pool<br>
+        ③ H2O 泳池 · Villas · 7:00–9:00 取号拍照，每人限时 1 分钟<br>
+        ④ Saka 博物馆 · 10:00–18:00 · 需预约 · 接驳车→Segara<br>
+        ⑤ Tevana Garden · Rimba Wana 与 Honzen 之间<br>
+        ⑥ Spa 水疗 · 可选 · 建议提前预约 · Aquatonic 海水浴 / 传统按摩
+      </div>
+
+      <div class="info-box">
+        <strong>🚗 接驳车站点</strong><br>
+        Rimba Lobby → Rimba Wana → Segara Lobby → Resort Lobby → Spa → Villas Lobby → Kubu
+      </div>
+
+      <div class="foot-tips">
+        <span>🚗 全凭接驳车移动</span> · <span>📱 Saka 需预约</span> · <span>⏰ H2O 拿号限时拍照</span><br>
+        <span>🍸 Rock Bar 17:00 已约</span> · <span>🎓 找机会拍集体毕业服照</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 6 ============ -->
+  <div class="slide theme-day6">
+    <div class="slide-inner">
+      <div class="day-badge">6.23 周二 · Day 6</div>
+      <h1>AYANA 收尾日<div class="sub">自由补玩 · SPA · 午餐 · 去机场</div></h1>
+      <div class="tags">
+        <span>🌴 自由活动</span><span>💆 SPA 可选</span><span>🏖️ 补玩园区</span>
+        <span>🍽️ 午餐未定</span><span>🧳 整理行李</span><span>🚗 15:15 去机场</span><span>✈️ 18:55 航班</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">09:00–11:30<span class="sub">自由</span></div>
+          <div class="tl-icon">🌴</div>
+          <div class="tl-content">
+            <div class="name">AYANA 自由活动 / 补玩园区</div>
+            <div class="detail">把前一天没玩到的补上，只选 1–2 个点</div>
+            <div class="tl-stickers"><span>自由补玩</span><span>不赶行程</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">09:30–11:30<span class="sub">💆 可选</span></div>
+          <div class="tl-icon">💆</div>
+          <div class="tl-content">
+            <div class="name">SPA 水疗 <span class="hl">· 建议上午</span></div>
+            <div class="detail">推荐 60–90 分钟项目，结束后留时间洗澡收拾</div>
+            <div class="tl-stickers"><span class="gold">提前预约</span><span class="warm">不要压到中午后</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:30–12:15<span class="sub">🧳 整理</span></div>
+          <div class="tl-icon">🧳</div>
+          <div class="tl-content">
+            <div class="name">回房整理行李 / 称重 / 检查托运</div>
+            <div class="detail">充电宝、相机电池、电脑、证件放随身包</div>
+            <div class="tl-stickers"><span>行李称重</span><span class="red">证件随身</span></div>
+          </div>
+        </div>
+
+        <!-- Warning: luggage check-through -->
+        <div class="warn-box">
+          <div class="w-title">🧳 托运行李前必拿出来</div>
+          <div>行李直挂北京，香港过夜<strong>拿不到</strong>托运行李。提前把以下放进随身包：</div>
+          <ul>
+            <li>🪥 牙刷牙膏 / 洗漱用品小样</li>
+            <li>🧴 护肤品 / 隐形眼镜护理液</li>
+            <li>👕 换洗内衣 / 第二天衣服</li>
+            <li>👓 眼镜 / 隐形眼镜盒</li>
+            <li>🔌 充电器 / 充电宝 / 转接头</li>
+            <li>💊 常用药</li>
+            <li>📄 护照 / 登机牌 / 现金卡</li>
+            <li>🎓 入校预约信息</li>
+          </ul>
+          <div class="reminder">💡 液体用 100ml 以下小瓶 · 充电宝必须随身</div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-time">12:00–12:30<span class="sub">🏨 退房</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">退房 / 寄存行李</div>
+            <div class="detail">late check-out 或先退房寄存</div>
+            <div class="tl-stickers"><span class="gold">退房寄存</span><span>别压线</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:30–14:00<span class="sub">🍽️ 午餐</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">午餐 <span class="hl">· 暂时未定</span></div>
+            <div class="detail">
+              <strong>A：</strong>AYANA 园区内<br>
+              <strong>B：</strong>出酒店只选 Jimbaran / 机场方向 10–20 分钟车程<br>
+              <strong style="color:#c0392b;">不要跨区去网红餐厅</strong>
+            </div>
+            <div class="tl-stickers"><span class="red">不要跑远</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">14:00–14:45<span class="sub">准备</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">回酒店 / 拿行李 / 上厕所</div>
+            <div class="detail"><strong style="color:#c0392b;">14:30 前必须回到 AYANA</strong></div>
+            <div class="tl-stickers"><span class="red">14:30 前回酒店</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">15:00–15:15<span class="sub">🚗 出发</span></div>
+          <div class="tl-icon">🚗</div>
+          <div class="tl-content">
+            <div class="name">上车准备去机场</div>
+            <div class="detail">确认护照、机票、行李、充电宝都带齐</div>
+            <div class="tl-stickers"><span class="gold">建议出发 15:15</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">15:30<span class="sub">⏰ hard cutoff</span></div>
+          <div class="tl-icon">⏰</div>
+          <div class="tl-content">
+            <div class="name">最晚出发去机场</div>
+            <div class="detail">超过会撞上晚高峰</div>
+            <div class="tl-stickers"><span class="red">最晚出发</span><span>不要拖延</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">~16:00<span class="sub">✈️ 抵达</span></div>
+          <div class="tl-icon">✈️</div>
+          <div class="tl-content">
+            <div class="name">抵达 DPS 机场</div>
+            <div class="detail">办理托运、安检、出境、候机</div>
+            <div class="tl-stickers"><span class="gold">托运行李</span><span>提前到机场</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:55<span class="sub">✈️ 起飞</span></div>
+          <div class="tl-icon">✈️</div>
+          <div class="tl-content">
+            <div class="name">航班起飞</div>
+            <div class="detail">结束巴厘岛旅程</div>
+            <div class="tl-stickers"><span class="gold">Selamat Jalan ✨</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot-tips">
+        <span>🧳 午餐前收好行李</span> · <span>🔋 充电宝/电脑不要托运</span><br>
+        <span>🚗 出酒店吃只选附近</span> · <span>⏰ 14:30 前回 AYANA</span><br>
+        <span>🚗 15:15 出发 · 15:30 最晚</span> · <span>✈️ 提前 3h 到机场</span><br>
+        <span>💆 SPA 安排上午，不要压退房后</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DAY 7 ============ -->
+  <div class="slide theme-day7">
+    <div class="slide-inner">
+      <div class="day-badge">Day 7 · 香港 → 北京</div>
+      <h1>香港中转日<div class="sub">预约入校 · 睡懒觉 · 机场午餐 · 回北京</div></h1>
+      <div class="tags">
+        <span>⏰ 08:00 预约入校</span><span>😴 继续睡</span><span>🧳 行李直挂</span>
+        <span>🚌 接驳车</span><span>🍽️ 机场午餐</span><span>✈️ 13:55 起飞</span><span>🛬 17:25 抵京</span>
+      </div>
+
+      <div class="tl">
+        <div class="tl-row">
+          <div class="tl-time">08:00–08:20<span class="sub">⏰ 闹钟</span></div>
+          <div class="tl-icon">⏰</div>
+          <div class="tl-content">
+            <div class="name">帮亲友预约入校</div>
+            <div class="detail">前一晚整理好姓名、证件号、手机号、校区<br>预约完成后再继续睡</div>
+            <div class="tl-stickers"><span class="red">本日第一任务</span><span>不要忘记</span></div>
+          </div>
+        </div>
+
+        <div class="warn-box">
+          <div class="w-title">🎓 入校预约需要提前准备</div>
+          <ul>
+            <li>📄 亲友姓名 / 证件号 / 手机号</li>
+            <li>📅 入校日期 / 校区或门区</li>
+            <li>👤 亲友身份信息</li>
+          </ul>
+          <div class="reminder">⏰ 设闹钟 08:00 · 前一晚整理好信息</div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-time">08:20–10:30<span class="sub">😴 补觉</span></div>
+          <div class="tl-icon">😴</div>
+          <div class="tl-content">
+            <div class="name">继续睡懒觉</div>
+            <div class="detail">不要安排早上外出</div>
+            <div class="tl-stickers"><span>补觉</span><span>轻松中转</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">10:30–11:00<span class="sub">🧳 收拾</span></div>
+          <div class="tl-icon">🪥</div>
+          <div class="tl-content">
+            <div class="name">起床洗漱 / 收拾随身包</div>
+            <div class="detail">行李已直挂北京，香港拿不到<br>洗漱用品、护肤品、换洗衣物必须在随身包</div>
+            <div class="tl-stickers"><span class="red">香港过夜包</span><span class="blue">行李直挂</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:00–11:20<span class="sub">🏨 退房</span></div>
+          <div class="tl-icon">🏨</div>
+          <div class="tl-content">
+            <div class="name">退房 / 确认接驳车</div>
+            <div class="detail">查看酒店 shuttle 时间，优先坐更早一班</div>
+            <div class="tl-stickers"><span>查 shuttle 时间</span><span class="red">别压线</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:20–11:50<span class="sub">🚌 shuttle</span></div>
+          <div class="tl-icon">🚌</div>
+          <div class="tl-content">
+            <div class="name">酒店接驳车 → 香港机场</div>
+            <div class="tl-stickers"><span>预留等车时间</span><span>轻装出发</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">11:50–12:20<span class="sub">✈️ 到达</span></div>
+          <div class="tl-icon">✈️</div>
+          <div class="tl-content">
+            <div class="name">到达香港机场</div>
+            <div class="detail">确认登机口，无需托运行李</div>
+            <div class="tl-stickers"><span class="blue">无托运行李</span><span>确认登机口</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:20–12:50<span class="sub">🍽️ 午餐</span></div>
+          <div class="tl-icon">🍽️</div>
+          <div class="tl-content">
+            <div class="name">机场午餐</div>
+            <div class="detail">比出酒店找餐厅更稳，吃完准备安检</div>
+            <div class="tl-stickers"><span class="gold">机场午餐</span><span>最稳安排</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">12:50–13:20<span class="sub">🛂 安检</span></div>
+          <div class="tl-icon">🛂</div>
+          <div class="tl-content">
+            <div class="name">安检 / 出境 / 到登机口</div>
+            <div class="detail">13:20 前后到登机口</div>
+            <div class="tl-stickers"><span class="red">提前到登机口</span><span>不要压线</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">13:20–13:55<span class="sub">✈️ 登机</span></div>
+          <div class="tl-icon">✈️</div>
+          <div class="tl-content">
+            <div class="name">登机 / 香港起飞</div>
+            <div class="detail">航班 13:55 香港 → 北京</div>
+            <div class="tl-stickers"><span class="gold">回北京</span><span class="blue">毕业典礼准备</span></div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">17:25<span class="sub">🛬 抵达</span></div>
+          <div class="tl-icon">🛬</div>
+          <div class="tl-content">
+            <div class="name">抵达北京首都机场</div>
+            <div class="detail">取托运行李（巴厘岛直挂到北京）</div>
+            <div class="tl-stickers"><span class="gold">抵达北京</span><span>取行李</span><span class="blue">准备毕业典礼</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <div class="w-title">🧳 托运行李已直挂北京</div>
+        <div>香港过夜拿不到行李箱：</div>
+        <ul>
+          <li>🪥 洗漱用品 / 👕 换洗内衣 / 👓 眼镜</li>
+          <li>🔌 充电器 / 充电宝 / 💊 常用药</li>
+          <li>📄 护照 / 登机牌 / 现金卡</li>
+        </ul>
+        <div class="reminder">💡 液体 100ml 以下 · 充电宝随身</div>
+      </div>
+
+      <div class="foot-tips">
+        <span>🧳 行李直挂北京，香港拿不到</span> · <span>🪥 洗漱护肤提前放随身包</span><br>
+        <span>🔋 充电器/充电宝/证件随身</span> · <span>💧 液体 100ml 以下</span><br>
+        <span>🚌 接驳车提前查班次</span> · <span>🍽️ 午餐机场吃最稳</span><br>
+        <span>⏰ 08:00 先预约入校</span> · <span>🎓 信息前一晚整理好</span><br>
+        <span>🧳 行李直挂到北京，17:25 在首都机场取</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ END ============ -->
+  <div class="slide theme-end">
+    <div class="slide-inner">
+      <div class="end-icon">🎓</div>
+      <h1>毕业快乐</h1>
+      <div style="width:24px;height:1.5px;background:#c8a96e;margin:10px auto;"></div>
+      <div class="end-msg">
+        从巴厘岛玩到最后一刻，再经香港飞回北京，<br>
+        主打一个：<span class="hl">行程很满，照片很多，人还健在。</span><br>
+        毕业快乐，顺利回家，典礼见！
+      </div>
+      <div class="end-quote">Selamat Jalan</div>
+
+      <div style="margin-top:24px;padding:14px;background:#e8f5e9;border-radius:12px;text-align:center;max-width:340px;">
+        <div style="font-size:0.6rem;letter-spacing:3px;color:#c8a96e;margin-bottom:8px;">── 这趟旅行我们一起 ──</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;">
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e8f5e9;color:#2d5a27;">🌊 Tukad Cepung</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#fdf6e3;color:#a68a4e;">🎓 梯田毕业照</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#fde8e3;color:#c05a3e;">🐒 Monkey Forest</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e0e6ef;color:#0a1a3a;">🏖️ Melasti</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e3eef7;color:#2C5F8A;">💎 Diamond Beach</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#fdf6e3;color:#a68a4e;">🦖 Kelingking</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e8f5e9;color:#2d5a27;">🍸 Rock Bar</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#fde8e3;color:#c05a3e;">🍖 Twist</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e0e6ef;color:#0a1a3a;">🌅 Kisik</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e8f5e9;color:#2d5a27;">🏨 AYANA</span>
+          <span style="font-size:0.55rem;padding:3px 8px;border-radius:12px;background:#e3eef7;color:#2C5F8A;">💆 Spa</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /carousel -->
+
+<!-- NAV DOTS -->
+<div class="nav-label">左右滑动切换</div>
+<div class="nav-bar" id="navBar"></div>
+
+<script>
+(function() {
+  const carousel = document.getElementById('carousel');
+  const navBar = document.getElementById('navBar');
+  const slides = carousel.querySelectorAll('.slide');
+  const labels = ['封面', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', '结尾'];
+  const dots = [];
+
+  // Create dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `跳转到${labels[i]}`);
+    dot.addEventListener('click', () => {
+      carousel.scrollTo({
+        left: slides[i].offsetLeft,
+        behavior: 'smooth'
+      });
+    });
+    navBar.appendChild(dot);
+    dots.push(dot);
+  });
+
+  // Track scroll position
+  let ticking = false;
+  carousel.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const center = carousel.scrollLeft + carousel.clientWidth / 2;
+        let activeIdx = 0;
+        slides.forEach((slide, i) => {
+          const sl = slide.offsetLeft;
+          const sr = sl + slide.offsetWidth;
+          if (sl <= center && center <= sr) activeIdx = i;
+        });
+        dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Keyboard nav
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft') {
+      carousel.scrollBy({ left: -carousel.clientWidth, behavior: 'smooth' });
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
