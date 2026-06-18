@@ -14,7 +14,7 @@
     font-family: 'Noto Sans SC', sans-serif;
     background: #0f0f1a;
     -webkit-tap-highlight-color: transparent;
-    touch-action: pan-y;
+    touch-action: manipulation;
   }
 
   /* ===== SCROLL CONTAINER ===== */
@@ -39,44 +39,242 @@
     position: relative;
   }
 
-  /* ===== NAV ===== */
-  .nav-bar {
+  /* ===== NAVIGATION ===== */
+
+  /* -- Side arrows -- */
+  .nav-arrow {
     position: fixed;
-    bottom: 20px;
-    left: 0; right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 6px;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 100;
-    padding: 0 20px;
-    flex-wrap: wrap;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    font-size: 1.5rem;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s, background 0.2s, transform 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+  .nav-arrow.visible {
+    opacity: 0.6;
+  }
+  .nav-arrow.visible:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.35);
+  }
+  .nav-arrow:active { transform: translateY(-50%) scale(0.88); }
+  .nav-arrow.prev { left: 10px; }
+  .nav-arrow.next { right: 10px; }
+
+  /* -- Bottom navigation bar -- */
+  .nav-bar-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px 16px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 6px 8px;
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   }
   .nav-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: all 0.3s;
-    flex-shrink: 0;
+    height: 28px;
+    border-radius: 14px;
     border: none;
-    padding: 0;
+    cursor: pointer;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.45);
+    font-size: 0.6rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    min-width: 28px;
+    white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 0.5px;
   }
-  .nav-dot.active { background: #fff; width: 24px; border-radius: 4px; }
-  .nav-dot:hover { background: rgba(255,255,255,0.6); }
+  .nav-dot.active {
+    background: rgba(255,255,255,0.92);
+    color: #1a1a2e;
+    padding: 0 12px;
+    animation: dotPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes dotPop {
+    0% { transform: scale(0.85); }
+    100% { transform: scale(1); }
+  }
+  .nav-dot:hover {
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-dot.active:hover {
+    background: rgba(255,255,255,0.92);
+    color: #1a1a2e;
+  }
 
-  .nav-label {
+  /* -- Page counter -- */
+  .page-counter {
     position: fixed;
-    bottom: 48px;
-    left: 0; right: 0;
-    text-align: center;
+    top: 16px;
+    right: 16px;
     z-index: 100;
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 2px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 4px 12px;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 1px;
     pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-counter .current { color: #fff; font-weight: 700; }
+
+  /* -- Initial swipe hint -- */
+  .swipe-intro {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+  .swipe-intro.hidden { opacity: 0; }
+  .swipe-intro .hand {
+    font-size: 1.6rem;
+    animation: swipeAnim 2s ease-in-out infinite;
+  }
+  .swipe-intro .text {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 3px;
+    font-weight: 300;
+  }
+  @keyframes swipeAnim {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    75% { transform: translateX(-4px); }
   }
 
   /* ===== COMMON ===== */
+
+  /* -- Staggered entry animation -- */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide .tl-row,
+  .slide .tags span,
+  .slide .budget,
+  .slide .foot-tips,
+  .slide .cover-quote,
+  .slide .end-msg,
+  .slide .warn-box,
+  .slide .info-box,
+  .slide .em-card {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .slide.entered .tl-row,
+  .slide.entered .tags span,
+  .slide.entered .budget,
+  .slide.entered .foot-tips,
+  .slide.entered .cover-quote,
+  .slide.entered .end-msg,
+  .slide.entered .warn-box,
+  .slide.entered .info-box,
+  .slide.entered .em-card {
+    animation: fadeSlideUp 0.45s cubic-bezier(0.2, 0, 0, 1) forwards;
+  }
+
+  .slide.entered .tl-row:nth-child(1) { animation-delay: 0.03s; }
+  .slide.entered .tl-row:nth-child(2) { animation-delay: 0.06s; }
+  .slide.entered .tl-row:nth-child(3) { animation-delay: 0.09s; }
+  .slide.entered .tl-row:nth-child(4) { animation-delay: 0.12s; }
+  .slide.entered .tl-row:nth-child(5) { animation-delay: 0.15s; }
+  .slide.entered .tl-row:nth-child(6) { animation-delay: 0.18s; }
+  .slide.entered .tl-row:nth-child(7) { animation-delay: 0.21s; }
+  .slide.entered .tl-row:nth-child(8) { animation-delay: 0.24s; }
+  .slide.entered .tl-row:nth-child(9) { animation-delay: 0.27s; }
+  .slide.entered .tl-row:nth-child(10) { animation-delay: 0.30s; }
+  .slide.entered .tl-row:nth-child(11) { animation-delay: 0.33s; }
+  .slide.entered .tl-row:nth-child(12) { animation-delay: 0.36s; }
+
+  .slide.entered .tags span:nth-child(1) { animation-delay: 0.04s; }
+  .slide.entered .tags span:nth-child(2) { animation-delay: 0.07s; }
+  .slide.entered .tags span:nth-child(3) { animation-delay: 0.10s; }
+  .slide.entered .tags span:nth-child(4) { animation-delay: 0.13s; }
+  .slide.entered .tags span:nth-child(5) { animation-delay: 0.16s; }
+  .slide.entered .tags span:nth-child(6) { animation-delay: 0.19s; }
+  .slide.entered .tags span:nth-child(7) { animation-delay: 0.22s; }
+  .slide.entered .tags span:nth-child(8) { animation-delay: 0.25s; }
+  .slide.entered .tags span:nth-child(9) { animation-delay: 0.28s; }
+  .slide.entered .tags span:nth-child(10) { animation-delay: 0.31s; }
+
+  .slide.entered .budget { animation-delay: 0.25s; }
+  .slide.entered .warn-box { animation-delay: 0.25s; }
+  .slide.entered .info-box { animation-delay: 0.25s; }
+  .slide.entered .foot-tips { animation-delay: 0.35s; }
+  .slide.entered .cover-quote { animation-delay: 0.25s; }
+  .slide.entered .end-msg { animation-delay: 0.2s; }
+
+  .slide.entered .em-card:nth-child(1) { animation-delay: 0.05s; }
+  .slide.entered .em-card:nth-child(2) { animation-delay: 0.10s; }
+  .slide.entered .em-card:nth-child(3) { animation-delay: 0.15s; }
+  .slide.entered .em-card:nth-child(4) { animation-delay: 0.20s; }
+
+  /* -- Budget number pop -- */
+  @keyframes numberPop {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  .slide.entered .budget strong {
+    animation: numberPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s;
+  }
+
+  /* ===== COMMON (original) ===== */
   .slide-inner {
     min-height: 100vh;
     padding: 20px 24px 100px;
@@ -410,6 +608,49 @@
   .theme-day7 .warn-box .reminder { margin-top: 6px; padding: 6px 8px; background: #dce8f5; border-radius: 6px; font-size: 0.6rem; font-weight: 500; color: #2C5F8A; }
   .theme-day7 .foot-tips { background: #2C5F8A; color: rgba(255,255,255,0.85); }
 
+  /* ===== REFERENCE THEME ===== */
+  .theme-emergency { background: #faf6ef; }
+  .theme-emergency .slide-inner { padding: 24px 24px 100px; }
+  .theme-emergency .emergency-icon { font-size: 1.6rem; margin-bottom: 4px; }
+  .theme-emergency h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; letter-spacing: 3px; }
+  .theme-emergency .subtitle { font-size: 0.65rem; color: #666; letter-spacing: 2px; margin-bottom: 20px; }
+  .theme-emergency .em-grid { display: flex; flex-direction: column; gap: 10px; }
+  .theme-emergency .em-card { background: #fff; border-radius: 14px; padding: 14px 16px; border-left: 3px solid #ddd; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .theme-emergency .em-card .em-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .theme-emergency .em-card .em-flag { font-size: 1.1rem; }
+  .theme-emergency .em-card .em-name { font-size: 0.75rem; font-weight: 700; color: #1a1a2e; letter-spacing: 1px; }
+  .theme-emergency .em-card .em-tel { font-size: 0.95rem; font-weight: 700; color: #b8452a; letter-spacing: 1px; margin: 4px 0 2px; }
+  .theme-emergency .em-card .em-tel a { color: #b8452a; text-decoration: none; }
+  .theme-emergency .em-card .em-desc { font-size: 0.6rem; color: #555; line-height: 1.5; }
+  .theme-emergency .em-divider { height: 1px; background: #e0dcd0; margin: 16px 0 14px; }
+  .theme-emergency .em-section { margin-bottom: 6px; }
+  .theme-emergency .em-section-title { font-size: 0.7rem; font-weight: 700; color: #1a1a2e; letter-spacing: 2px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  /* Checklist */
+  .theme-emergency .em-check-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.6rem; color: #444; cursor: pointer; border-bottom: 1px solid #ece8e0; }
+  .theme-emergency .em-check-item:last-child { border-bottom: none; }
+  .theme-emergency .em-check-item .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #bbb; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.5rem; color: transparent; }
+  .theme-emergency .em-check-item input:checked + .check-box { background: #2ecc71; border-color: #2ecc71; color: #fff; }
+  .theme-emergency .em-check-item input:checked + .check-box::after { content: '✓'; }
+  .theme-emergency .em-check-item input:checked ~ .check-label { color: #999; text-decoration: line-through; }
+  /* Info grid */
+  .theme-emergency .em-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-emergency .em-info-item { background: #fff; border-radius: 10px; padding: 10px 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .theme-emergency .em-info-item .ii-label { font-size: 0.55rem; color: #777; letter-spacing: 1px; margin-bottom: 3px; }
+  .theme-emergency .em-info-item .ii-value { font-size: 0.65rem; color: #333; line-height: 1.4; }
+  /* Phrases */
+  .theme-emergency .em-phrase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .theme-emergency .em-phrase { background: #fff; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; border: 1px solid #ece8e0; }
+  .theme-emergency .em-phrase .id { font-size: 0.7rem; font-weight: 600; color: #b8452a; }
+  .theme-emergency .em-phrase .cn { font-size: 0.55rem; color: #555; margin-top: 1px; }
+  /* Etiquette */
+  .theme-emergency .em-tip-list { display: flex; flex-direction: column; gap: 5px; }
+  .theme-emergency .em-tip-item { display: flex; align-items: flex-start; gap: 8px; font-size: 0.6rem; color: #444; line-height: 1.4; }
+  .theme-emergency .em-tip-item .tip-icon { flex-shrink: 0; font-size: 0.7rem; }
+  /* Apps */
+  .theme-emergency .em-apps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .theme-emergency .em-app-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 0.55rem; padding: 5px 10px; border-radius: 8px; background: #fff; color: #444; border: 1px solid #ece8e0; }
+  .theme-emergency .em-app-tag .app-icon { font-size: 0.7rem; }
+
   /* ===== END THEME ===== */
   .theme-end { background: linear-gradient(180deg, #faf6ef 0%, #e0f0ee 100%); }
   .theme-end .slide-inner { justify-content: center; align-items: center; text-align: center; }
@@ -441,34 +682,9 @@
   .budget strong { font-weight: 700; }
   .budget .note { font-size: 0.6rem; color: #bbb; }
 
-  /* ===== ARROW HINT ===== */
-  .swipe-hint {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 99;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s;
-    border: none;
-    font-size: 1.2rem;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(4px);
-    color: #fff;
-  }
-  .swipe-hint.prev { left: 8px; }
-  .swipe-hint.next { right: 8px; }
-  .carousel:hover + .swipe-hint,
-  .swipe-hint:hover { opacity: 1; }
-
   /* ===== PRINT ===== */
   @media print {
-    .nav-bar, .nav-label, .swipe-hint { display: none; }
+    .nav-bar-wrap, .page-counter, .swipe-intro, .nav-arrow { display: none !important; }
     .carousel { display: block; overflow: visible; }
     .slide { height: auto; min-height: 100vh; page-break-after: always; }
   }
@@ -482,7 +698,7 @@
   <!-- ============ COVER ============ -->
   <div class="slide theme-cover">
     <div class="slide-inner">
-      <div class="day-badge" style="background:#1a3a3a;color:#fff;opacity:0.7;">BALI · 2025</div>
+      <div class="day-badge" style="background:#1a3a3a;color:#fff;opacity:0.7;">BALI · 2026</div>
       <h1>巴厘岛<br>毕业旅行</h1>
       <div class="date-row" style="margin-top:6px;">6.18 — 6.23</div>
       <div class="cover-dests">
@@ -496,6 +712,157 @@
         <span>💆 Spa</span><span>✈️ 香港中转</span>
       </div>
       <div class="cover-quote">Six Days in Paradise</div>
+    </div>
+  </div>
+
+  <!-- ============ EMERGENCY ============ -->
+  <div class="slide theme-emergency">
+    <div class="slide-inner">
+      <div class="emergency-icon">📋</div>
+      <h1>行前参考</h1>
+      <div class="subtitle">印尼 · 出发前存好这些</div>
+
+      <!-- Emergency numbers -->
+      <div class="em-grid">
+        <div class="em-card" style="border-left-color:#e74c3c;">
+          <div class="em-header">
+            <span class="em-flag">🇮🇩</span>
+            <span class="em-name">印尼全国通用</span>
+          </div>
+          <div class="em-tel">112</div>
+          <div class="em-desc">综合紧急号码（手机可拨） · 警察 / 救护车 / 消防</div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:8px;background:#ece8e0;color:#555;">🚔 110 警察</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:8px;background:#ece8e0;color:#555;">🚑 118 救护</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:8px;background:#ece8e0;color:#555;">🔥 113 消防</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:8px;background:#ece8e0;color:#555;">👮 +62-361-759687 巴厘岛旅游警察</span>
+          </div>
+        </div>
+        <div class="em-card" style="border-left-color:#1a6bc4;">
+          <div class="em-header">
+            <span class="em-flag">🇨🇦</span>
+            <span class="em-name">加拿大 · 驻印尼大使馆</span>
+          </div>
+          <div class="em-tel"><a href="tel:+622125507800">+62 21 2550 7800</a></div>
+          <div class="em-desc">24 小时紧急协助 · 下班后按提示转接<br>渥太华 24h：<a href="tel:+16139968885" style="color:#ffe082;text-decoration:none;">+1 613 996 8885</a>（对方付费）</div>
+        </div>
+        <div class="em-card" style="border-left-color:#e74c3c;">
+          <div class="em-header">
+            <span class="em-flag">🇭🇰</span>
+            <span class="em-name">香港 · 入境处协助在外港人小组</span>
+          </div>
+          <div class="em-tel"><a href="tel:+8521868">(852) 1868</a></div>
+          <div class="em-desc">24 小时 · WhatsApp / WeChat 同号 1868<br>也可联系中国驻登巴萨总领馆：<a href="tel:+62361239902" style="color:#ffe082;text-decoration:none;">+62-361-239902</a></div>
+        </div>
+        <div class="em-card" style="border-left-color:#034b9a;">
+          <div class="em-header">
+            <span class="em-flag">🇲🇾</span>
+            <span class="em-name">马来西亚 · 驻印尼大使馆</span>
+          </div>
+          <div class="em-tel"><a href="tel:+6281380813036">+62 813 8081 3036</a></div>
+          <div class="em-desc">下班后紧急电话<br>巴厘岛荣誉领事：<a href="tel:+62361751953" style="color:#ffe082;text-decoration:none;">+62 361 751953</a></div>
+        </div>
+      </div>
+
+      <!-- Checklist -->
+      <div class="em-divider"></div>
+      <div class="em-section">
+        <div class="em-section-title">✅ 行前清单</div>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">护照有效期 > 6 个月</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">电子签证 / 落地签准备</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">打印酒店确认单、机票行程单</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">买好 eSIM / 电话卡 / 确认漫游</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">下载 Grab、Gojek、WhatsApp</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">旅行保险</span>
+        </label>
+        <label class="em-check-item">
+          <input type="checkbox" hidden><span class="check-box"></span><span class="check-label">欧标转换插头（两圆脚）</span>
+        </label>
+      </div>
+
+      <!-- Practical info -->
+      <div class="em-divider"></div>
+      <div class="em-section">
+        <div class="em-section-title">🔌 当地实用信息</div>
+        <div class="em-info-grid">
+          <div class="em-info-item">
+            <div class="ii-label">插座</div>
+            <div class="ii-value">两圆脚（欧标）<br>230V · 带转换头</div>
+          </div>
+          <div class="em-info-item">
+            <div class="ii-label">换汇</div>
+            <div class="ii-value">机场换一点够打车<br>乌布 / 市区汇率更好</div>
+          </div>
+          <div class="em-info-item">
+            <div class="ii-label">小费</div>
+            <div class="ii-value">不强制 · 包车 / SPA / 打扫<br>一般 10K–20K IDR</div>
+          </div>
+          <div class="em-info-item">
+            <div class="ii-label">天气 · 六月</div>
+            <div class="ii-value">旱季 ☀️<br>26–31°C · 注意防晒</div>
+          </div>
+          <div class="em-info-item">
+            <div class="ii-label">交通</div>
+            <div class="ii-value">Grab / Gojek 打车<br>比路边拦车便宜</div>
+          </div>
+          <div class="em-info-item">
+            <div class="ii-label">网络</div>
+            <div class="ii-value">Telkomsel 信号最好<br>机场买 Sim 卡或提前买 eSIM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phrases -->
+      <div class="em-divider"></div>
+      <div class="em-section">
+        <div class="em-section-title">💬 印尼话几句</div>
+        <div class="em-phrase-grid">
+          <div class="em-phrase"><span class="id">Terima Kasih</span><span class="cn">谢谢</span></div>
+          <div class="em-phrase"><span class="id">Berapa?</span><span class="cn">多少钱？</span></div>
+          <div class="em-phrase"><span class="id">Tidak pedas</span><span class="cn">不要辣</span></div>
+          <div class="em-phrase"><span class="id">Enak</span><span class="cn">好吃</span></div>
+          <div class="em-phrase"><span class="id">Tolong</span><span class="cn">麻烦 / 帮我一下</span></div>
+          <div class="em-phrase"><span class="id">Selamat Jalan</span><span class="cn">一路顺风</span></div>
+        </div>
+      </div>
+
+      <!-- Etiquette -->
+      <div class="em-divider"></div>
+      <div class="em-section">
+        <div class="em-section-title">🙏 文化礼节</div>
+        <div class="em-tip-list">
+          <div class="em-tip-item"><span class="tip-icon">🙅</span>进寺庙需围纱笼，门口有出借 · 以示尊重</div>
+          <div class="em-tip-item"><span class="tip-icon">✋</span>左手不礼貌 · 给钱/接东西用右手</div>
+          <div class="em-tip-item"><span class="tip-icon">🦶</span>不要用脚指东西 · 脚底不要对着人</div>
+          <div class="em-tip-item"><span class="tip-icon">🙏</span>头部是神圣的 · 不要摸别人的头（包括小孩）</div>
+        </div>
+      </div>
+
+      <!-- Apps -->
+      <div class="em-divider"></div>
+      <div class="em-section">
+        <div class="em-section-title">📱 实用 App</div>
+        <div class="em-apps">
+          <span class="em-app-tag"><span class="app-icon">🚕</span> Grab</span>
+          <span class="em-app-tag"><span class="app-icon">🛵</span> Gojek</span>
+          <span class="em-app-tag"><span class="app-icon">💬</span> WhatsApp</span>
+          <span class="em-app-tag"><span class="app-icon">🗺️</span> Google Maps</span>
+          <span class="em-app-tag"><span class="app-icon">🍔</span> GoFood</span>
+          <span class="em-app-tag"><span class="app-icon">📷</span> Google Translate</span>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1405,60 +1772,134 @@
 
 </div><!-- /carousel -->
 
-<!-- NAV DOTS -->
-<div class="nav-label">左右滑动切换</div>
-<div class="nav-bar" id="navBar"></div>
+<!-- NAVIGATION -->
+<button class="nav-arrow prev" id="navPrev" aria-label="上一页">‹</button>
+<button class="nav-arrow next" id="navNext" aria-label="下一页">›</button>
+
+<div class="page-counter" id="pageCounter"><span class="current" id="pageCurrent">1</span> / <span id="pageTotal">9</span></div>
+
+<div class="nav-bar-wrap">
+  <div class="nav-bar" id="navBar"></div>
+</div>
+
+<div class="swipe-intro" id="swipeIntro">
+  <div class="hand">👆</div>
+  <div class="text">左右滑动翻页</div>
+</div>
 
 <script>
 (function() {
   const carousel = document.getElementById('carousel');
   const navBar = document.getElementById('navBar');
   const slides = carousel.querySelectorAll('.slide');
-  const labels = ['封面', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', '结尾'];
+  const dotLabels = ['🏠', '📋', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', '🎓'];
   const dots = [];
 
-  // Create dots
+  // UI refs
+  const prevBtn = document.getElementById('navPrev');
+  const nextBtn = document.getElementById('navNext');
+  const pageCurrent = document.getElementById('pageCurrent');
+  const pageTotal = document.getElementById('pageTotal');
+  const swipeIntro = document.getElementById('swipeIntro');
+  pageTotal.textContent = slides.length;
+
+  let currentIdx = 0;
+  let isTransitioning = false;
+
+  // ---- Create dots ----
   slides.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', `跳转到${labels[i]}`);
-    dot.addEventListener('click', () => {
-      carousel.scrollTo({
-        left: slides[i].offsetLeft,
-        behavior: 'smooth'
-      });
-    });
+    dot.setAttribute('aria-label', `跳转到${dotLabels[i]}`);
+    dot.textContent = dotLabels[i];
+    dot.addEventListener('click', () => goTo(i));
     navBar.appendChild(dot);
     dots.push(dot);
   });
 
-  // Track scroll position
+  // ---- Navigation ----
+  function goTo(idx) {
+    if (isTransitioning || idx === currentIdx) return;
+    isTransitioning = true;
+    currentIdx = idx;
+    carousel.scrollTo({
+      left: slides[idx].offsetLeft,
+      behavior: 'smooth'
+    });
+    setTimeout(() => { isTransitioning = false; }, 400);
+  }
+
+  function goNext() { goTo(Math.min(currentIdx + 1, slides.length - 1)); }
+  function goPrev() { goTo(Math.max(currentIdx - 1, 0)); }
+
+  prevBtn.addEventListener('click', goPrev);
+  nextBtn.addEventListener('click', goNext);
+
+  // ---- Update UI ----
+  function updateUI(idx) {
+    // Trigger staggered entry animation (only once per slide)
+    slides[idx].classList.add('entered');
+
+    // Dots
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+
+    // Page counter
+    pageCurrent.textContent = idx + 1;
+
+    // Arrows visibility
+    prevBtn.classList.toggle('visible', idx > 0);
+    nextBtn.classList.toggle('visible', idx < slides.length - 1);
+
+    // Update aria-label for current dot
+    dots.forEach((d, i) => {
+      d.setAttribute('aria-label', i === idx
+        ? `当前页：${dotLabels[i]}`
+        : `跳转到${dotLabels[i]}`);
+    });
+  }
+
+  // ---- Scroll tracking (with passive listener) ----
   let ticking = false;
   carousel.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
         const center = carousel.scrollLeft + carousel.clientWidth / 2;
-        let activeIdx = 0;
+        let idx = 0;
         slides.forEach((slide, i) => {
           const sl = slide.offsetLeft;
           const sr = sl + slide.offsetWidth;
-          if (sl <= center && center <= sr) activeIdx = i;
+          if (sl <= center && center <= sr) idx = i;
         });
-        dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+        if (idx !== currentIdx) {
+          currentIdx = idx;
+          updateUI(idx);
+        }
         ticking = false;
       });
       ticking = true;
     }
+  }, { passive: true });
+
+  // ---- Keyboard nav ----
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
   });
 
-  // Keyboard nav
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') {
-      carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
-    } else if (e.key === 'ArrowLeft') {
-      carousel.scrollBy({ left: -carousel.clientWidth, behavior: 'smooth' });
+  // ---- Dismiss swipe hint on first interaction ----
+  function dismissHint() {
+    if (!swipeIntro.classList.contains('hidden')) {
+      swipeIntro.classList.add('hidden');
+      setTimeout(() => swipeIntro.remove(), 800);
     }
-  });
+  }
+  carousel.addEventListener('scroll', dismissHint, { once: true, passive: true });
+  document.addEventListener('click', dismissHint, { once: true });
+
+  // ---- Init ----
+  updateUI(0);
 
 })();
 </script>
