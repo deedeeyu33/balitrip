@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 · 南部海岸线 · 行程海报</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 800px;
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .poster {
+    width: 760px;
+    background: #faf6ef;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    position: relative;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, #0a1a3a 0%, #c06952 100%);
+    padding: 2rem 2.5rem 1.8rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '🌊';
+    position: absolute;
+    top: -30px;
+    right: 20px;
+    font-size: 6rem;
+    opacity: 0.1;
+    transform: rotate(15deg);
+  }
+  .header::before {
+    content: '🌅';
+    position: absolute;
+    bottom: -20px;
+    left: 20px;
+    font-size: 4rem;
+    opacity: 0.08;
+    transform: rotate(-10deg);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  .header .badge {
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.85);
+  }
+  .header .date {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+  .header h1 {
+    font-size: 2.6rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+  .header h1 .sub {
+    font-weight: 300;
+    font-size: 0.45em;
+    letter-spacing: 4px;
+    opacity: 0.8;
+    margin-top: 0.1rem;
+  }
+  .header .route-summary {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .header .route-summary span {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+  }
+
+  /* ===== BODY ===== */
+  .body {
+    padding: 1.5rem 2.5rem 2rem;
+  }
+
+  /* ===== TIMELINE ===== */
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: #c06952;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tl-row {
+    display: flex;
+    gap: 0;
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.06);
+    align-items: flex-start;
+  }
+  .tl-row:last-child { border-bottom: none; }
+
+  .tl-time {
+    width: 80px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #0a1a3a;
+    padding-top: 0.15rem;
+  }
+  .tl-time .sub {
+    font-weight: 400;
+    font-size: 0.65rem;
+    color: #999;
+    display: block;
+  }
+
+  .tl-icon {
+    width: 30px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 1rem;
+    padding-top: 0.15rem;
+  }
+
+  .tl-content {
+    flex: 1;
+  }
+  .tl-content .name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1a2e;
+  }
+  .tl-content .name .highlight {
+    color: #c06952;
+    font-weight: 500;
+    font-size: 0.75rem;
+  }
+  .tl-content .detail {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.1rem;
+    line-height: 1.4;
+  }
+  .tl-content .detail strong { color: #555; }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c06952, transparent);
+    margin: 0.5rem 0 0.8rem;
+  }
+
+  /* ===== STICKERS ===== */
+  .stickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.8rem 0 0;
+  }
+  .sticker {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    background: #e8eef5;
+    color: #0a1a3a;
+  }
+  .sticker.gold { background: #fdf6e3; color: #a68a4e; }
+  .sticker.red { background: #fce4ec; color: #c0392b; }
+  .sticker.coral { background: #fde8e3; color: #c05a3e; }
+  .sticker.navy { background: #e0e6ef; color: #0a1a3a; }
+
+  /* ===== LUNCH PLAN CARDS ===== */
+  .plan-card {
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+  }
+  .plan-card.primary {
+    border-color: #c06952;
+    background: #fdf8f5;
+  }
+  .plan-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .plan-header .plan-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #1a1a2e;
+  }
+  .plan-tag {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .plan-tag.first { background: #c06952; color: #fff; }
+  .plan-tag.second { background: #e8eef5; color: #0a1a3a; }
+  .plan-tag.third { background: #e8e8e8; color: #888; }
+  .plan-desc {
+    font-size: 0.68rem;
+    color: #888;
+    line-height: 1.4;
+    margin-bottom: 0.4rem;
+  }
+  .plan-mini-tl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .plan-mini-tl-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.63rem;
+    color: #999;
+    line-height: 1.5;
+  }
+  .plan-mini-tl-item .time {
+    font-weight: 600;
+    color: #555;
+    min-width: 62px;
+    flex-shrink: 0;
+  }
+  .plan-mini-tl-item .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ddd;
+    flex-shrink: 0;
+  }
+  .plan-mini-tl-item .dot.highlight { background: #c06952; }
+  .plan-mini-tl-item .dot.warn { background: #c0392b; }
+
+  /* ===== INFO BOX ===== */
+  .info-box {
+    background: #eef2f7;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    margin: 0.8rem 0;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: #666;
+  }
+  .info-box strong { color: #0a1a3a; }
+
+  /* ===== FOOTER INFO ===== */
+  .footer-info {
+    background: #0a1a3a;
+    color: rgba(255,255,255,0.7);
+    padding: 1rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+  }
+  .footer-info .tip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .footer-info .tip-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+  .footer-info .price {
+    font-weight: 700;
+    color: #c06952;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media print {
+    body { padding: 0; background: #fff; }
+    .poster { box-shadow: none; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">BALI · SOUTH COAST</span>
+      <span class="date">6.20 周六 · Day 3</span>
+    </div>
+    <h1>
+      南部海岸线
+      <div class="sub">Blue Point · 情人崖 · Melasti · Kisik</div>
+    </h1>
+    <div class="route-summary">
+      <span>🥐 Ubud 早餐</span>
+      <span>🚗 07:15 出发</span>
+      <span>🏨 AYANA 寄行李</span>
+      <span>🌊 Blue Point</span>
+      <span>⛰️ 情人崖</span>
+      <span>🏖️ Melasti Beach</span>
+      <span>🌅 Kisik 看景</span>
+      <span>🍽️ 18:30 晚餐</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+    <div class="section-label">── 当日行程 ──</div>
+
+    <div class="timeline">
+
+      <!-- 07:00–07:15 早餐 -->
+      <div class="tl-row">
+        <div class="tl-time">07:00–07:15<span class="sub">🥐 早餐</span></div>
+        <div class="tl-icon">🥐</div>
+        <div class="tl-content">
+          <div class="name">Ubud 酒店早餐 · 退房</div>
+          <div class="detail">早餐后退房，行李上车<br><strong style="color:#c0392b;">提醒：07:15 准时出发</strong></div>
+          <div class="stickers">
+            <span class="sticker red">⏰ 07:15 准时出发</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07:15–09:30 转场 -->
+      <div class="tl-row">
+        <div class="tl-time">07:15–09:30<span class="sub">🚗 ~2h15</span></div>
+        <div class="tl-icon">🚗</div>
+        <div class="tl-content">
+          <div class="name">Ubud → AYANA</div>
+          <div class="detail">从 Ubud 出发前往 AYANA / Jimbaran<br>按堵车预留 2h–2h15，不按最快导航算</div>
+          <div class="stickers">
+            <span class="sticker">长距离转场</span>
+            <span class="sticker">预留堵车时间</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09:30–09:50 AYANA 寄存 -->
+      <div class="tl-row">
+        <div class="tl-time">09:30–09:50<span class="sub">20min 快速处理</span></div>
+        <div class="tl-icon">🏨</div>
+        <div class="tl-content">
+          <div class="name">AYANA 快速寄行李 · 和卡姐汇合</div>
+          <div class="detail">到 AYANA 后快速寄存行李、上厕所、整理随身物品<br>和 <strong>卡姐</strong> 汇合，确认 Kisik 18:30 晚餐<br><strong style="color:#c0392b;">不正式入住</strong>，晚餐后再入住</div>
+          <div class="stickers">
+            <span class="sticker">20min 快速处理</span>
+            <span class="sticker">不正式入住</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09:50–10:40 前往 Blue Point -->
+      <div class="tl-row">
+        <div class="tl-time">09:50–10:40<span class="sub">🚗 ~50min</span></div>
+        <div class="tl-icon">🚗</div>
+        <div class="tl-content">
+          <div class="name">AYANA → Blue Point / Suluban Beach</div>
+          <div class="detail">前往 Blue Point<br>进入 Uluwatu 区域后路可能变窄，按 40–50min 预留</div>
+          <div class="stickers">
+            <span class="sticker">预留车程</span>
+            <span class="sticker">不按最快导航算</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10:40–11:40 Blue Point -->
+      <div class="tl-row">
+        <div class="tl-time">10:40–11:40<span class="sub">~1h</span></div>
+        <div class="tl-icon">🌊</div>
+        <div class="tl-content">
+          <div class="name">Blue Point / Suluban Beach</div>
+          <div class="detail">看悬崖、洞穴感、蓝色海水、冲浪点，拍照打卡<br>潮汐合适就下去拍洞穴/海水；潮汐不好就在上方悬崖或楼梯区域拍<br><strong>提醒：</strong>不下水，不深玩</div>
+          <div class="stickers">
+            <span class="sticker">1h 打卡</span>
+            <span class="sticker">看潮汐决定是否下去</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11:40–12:00 短移动 -->
+      <div class="tl-row">
+        <div class="tl-time">11:40–12:00<span class="sub">🚗 短移动</span></div>
+        <div class="tl-icon">🚗</div>
+        <div class="tl-content">
+          <div class="name">Blue Point → 情人崖</div>
+          <div class="detail">短途移动，预留停车和上下车时间</div>
+        </div>
+      </div>
+
+      <!-- 12:00–13:00 情人崖 -->
+      <div class="tl-row">
+        <div class="tl-time">12:00–13:00<span class="sub">~1h</span></div>
+        <div class="tl-icon">⛰️</div>
+        <div class="tl-content">
+          <div class="name">情人崖</div>
+          <div class="detail">保留情人崖海景打卡<br><strong style="color:#c0392b;">不做乌鲁瓦图寺深度游，不看 Kecak</strong><br><strong style="color:#c0392b;">猴子会抢东西！</strong> 收好墨镜、帽子、手机、耳环、零食、塑料袋</div>
+          <div class="stickers">
+            <span class="sticker gold">海景打卡</span>
+            <span class="sticker red">🐒 猴子警戒</span>
+            <span class="sticker">不深逛寺庙</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13:00 午餐 Plan A / B / C -->
+      <div class="tl-row" style="border-bottom:none;padding-bottom:0.2rem;">
+        <div class="tl-time">13:00–14:45<span class="sub">🍽️ 午餐方案</span></div>
+        <div class="tl-icon">🍽️</div>
+        <div class="tl-content">
+          <div class="name">午餐 Plan A / B / C</div>
+          <div class="detail">Plan A 优先，吃完直接玩 Melasti，最顺路。<br>Plan B 环境好适合休息，Plan C 快速兜底。<br><strong>不管选哪个，16:35 开始收拾，16:50 必须上车。</strong></div>
+          <div class="stickers">
+            <span class="sticker gold">Plan A 首选</span>
+            <span class="sticker">Plan B 备选</span>
+            <span class="sticker navy">Plan C 快速兜底</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan Cards -->
+      <div style="padding:0.2rem 0 0.6rem 110px;">
+        <div class="plan-card primary">
+          <div class="plan-header">
+            <span class="plan-name">🌊 Magus Warung · 首选</span>
+            <span class="plan-tag first">首选</span>
+          </div>
+          <div class="plan-desc">海边环境，靠近 Melasti，吃完直接玩海滩，最顺路。适合想要环境好、路线顺、午餐和 Melasti 直接衔接。</div>
+          <div class="plan-mini-tl">
+            <div class="plan-mini-tl-item"><span class="time">13:00</span><span class="dot"></span>情人崖结束</div>
+            <div class="plan-mini-tl-item"><span class="time">13:00–13:45</span><span class="dot"></span>情人崖 → Magus Warung</div>
+            <div class="plan-mini-tl-item"><span class="time">13:45–14:45</span><span class="dot highlight"></span>Magus Warung 午餐</div>
+            <div class="plan-mini-tl-item"><span class="time">14:45–16:50</span><span class="dot"></span>Melasti Beach 玩 / 拍照 / 吹风 / 踩水</div>
+            <div class="plan-mini-tl-item"><span class="time">16:35</span><span class="dot warn"></span><strong style="color:#c0392b;">开始收拾</strong></div>
+            <div class="plan-mini-tl-item"><span class="time">16:50</span><span class="dot warn"></span><strong style="color:#c0392b;">必须上车回 AYANA</strong></div>
+          </div>
+        </div>
+
+        <div class="plan-card">
+          <div class="plan-header">
+            <span class="plan-name">🌿 Tanah Uluwatu · 备选</span>
+            <span class="plan-tag second">备选</span>
+          </div>
+          <div class="plan-desc">环境好，适合休息，modern brunch / grill / bakery 风格。适合 Magus 不合适、想坐得更舒服的时候。</div>
+          <div class="plan-mini-tl">
+            <div class="plan-mini-tl-item"><span class="time">13:00</span><span class="dot"></span>情人崖结束</div>
+            <div class="plan-mini-tl-item"><span class="time">13:00–13:20</span><span class="dot"></span>情人崖 → Tanah Uluwatu</div>
+            <div class="plan-mini-tl-item"><span class="time">13:20–14:20</span><span class="dot highlight"></span>Tanah Uluwatu 午餐</div>
+            <div class="plan-mini-tl-item"><span class="time">14:20–14:55</span><span class="dot"></span>Tanah Uluwatu → Melasti Beach</div>
+            <div class="plan-mini-tl-item"><span class="time">14:55–16:50</span><span class="dot"></span>Melasti Beach 玩 / 拍照 / 吹风 / 踩水</div>
+            <div class="plan-mini-tl-item"><span class="time">16:35</span><span class="dot warn"></span><strong style="color:#c0392b;">开始收拾</strong></div>
+            <div class="plan-mini-tl-item"><span class="time">16:50</span><span class="dot warn"></span><strong style="color:#c0392b;">必须上车回 AYANA</strong></div>
+          </div>
+        </div>
+
+        <div class="plan-card" style="margin-bottom:0;">
+          <div class="plan-header">
+            <span class="plan-name">🍛 Warung Local Uluwatu · 快速兜底</span>
+            <span class="plan-tag third">兜底</span>
+          </div>
+          <div class="plan-desc">更快、更便宜，偏本地印尼菜，适合临时兜底。Plan A / B 没位置、等位太久、想快点吃完去海边。</div>
+          <div class="plan-mini-tl">
+            <div class="plan-mini-tl-item"><span class="time">13:00</span><span class="dot"></span>情人崖结束</div>
+            <div class="plan-mini-tl-item"><span class="time">13:00–13:15</span><span class="dot"></span>情人崖 → Warung Local</div>
+            <div class="plan-mini-tl-item"><span class="time">13:15–14:05</span><span class="dot highlight"></span>Warung Local 午餐</div>
+            <div class="plan-mini-tl-item"><span class="time">14:05–14:50</span><span class="dot"></span>Warung Local → Melasti Beach</div>
+            <div class="plan-mini-tl-item"><span class="time">14:50–16:50</span><span class="dot"></span>Melasti Beach 玩 / 拍照 / 吹风 / 踩水</div>
+            <div class="plan-mini-tl-item"><span class="time">16:35</span><span class="dot warn"></span><strong style="color:#c0392b;">开始收拾</strong></div>
+            <div class="plan-mini-tl-item"><span class="time">16:50</span><span class="dot warn"></span><strong style="color:#c0392b;">必须上车回 AYANA</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14:45–16:50 Melasti -->
+      <div class="tl-row">
+        <div class="tl-time">14:45–16:50<span class="sub">~2h</span></div>
+        <div class="tl-icon">🏖️</div>
+        <div class="tl-content">
+          <div class="name">Melasti Beach <span class="highlight">· 当天主玩点</span></div>
+          <div class="detail">当天主沙滩点，预留 2 小时<br>打卡拍白崖、公路、海滩、海水，吹风、踩水、休息<br><strong style="color:#c0392b;">16:35 开始收拾，16:50 必须上车回 AYANA</strong></div>
+          <div class="stickers">
+            <span class="sticker gold">主沙滩点</span>
+            <span class="sticker">白崖海景</span>
+            <span class="sticker">吹风玩水</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 16:50–17:40 回 AYANA -->
+      <div class="tl-row">
+        <div class="tl-time">16:50–17:40<span class="sub">🚗 ~50min</span></div>
+        <div class="tl-icon">🚗</div>
+        <div class="tl-content">
+          <div class="name">Melasti → AYANA</div>
+          <div class="detail">从 Melasti 回 AYANA<br>按下午返程和晚高峰预留 50min</div>
+          <div class="stickers">
+            <span class="sticker">回酒店</span>
+            <span class="sticker">预留堵车时间</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17:40–17:55 AYANA 快速整理 -->
+      <div class="tl-row">
+        <div class="tl-time">17:40–17:55<span class="sub">15min 快速整理</span></div>
+        <div class="tl-icon">🏨</div>
+        <div class="tl-content">
+          <div class="name">AYANA Lobby 快速整理</div>
+          <div class="detail">不上房间，不正式入住<br>只做：上厕所、洗手洗脚、整理衣服头发、拿随身包<br>行李继续寄存，晚餐后再正式入住</div>
+          <div class="stickers">
+            <span class="sticker">15min 快速整理</span>
+            <span class="sticker">不翻箱子</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17:55–18:25 提前看景 -->
+      <div class="tl-row">
+        <div class="tl-time">17:55–18:25<span class="sub">🌅 看海景晚霞</span></div>
+        <div class="tl-icon">🌅</div>
+        <div class="tl-content">
+          <div class="name">前往 Kisik / 餐厅附近看景</div>
+          <div class="detail">提前前往 Kisik 附近，报预订，拍海景和晚霞<br><strong>不要临近 18:30 才从 lobby 出发</strong></div>
+          <div class="stickers">
+            <span class="sticker">提前到餐厅附近</span>
+            <span class="sticker">看海景晚霞</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18:30 Kisik -->
+      <div class="tl-row">
+        <div class="tl-time">18:30<span class="sub">🍽️ 晚餐</span></div>
+        <div class="tl-icon">🍽️</div>
+        <div class="tl-content">
+          <div class="name">Kisik Seafood & Grill <span class="highlight">· 已预约 18:30</span></div>
+          <div class="detail">晚餐后正式入住、取行李、回房休息</div>
+          <div class="stickers">
+            <span class="sticker gold">✅ 已预约 18:30</span>
+            <span class="sticker">晚餐后入住</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 备用规则 -->
+    <div class="divider"></div>
+    <div class="info-box">
+      <strong>📌 备用规则</strong><br>
+      • 如果 Ubud → AYANA 路上严重堵车，优先压缩 Blue Point 10 分钟，不压缩 Melasti 和 Kisik<br>
+      • 如果 Melasti 玩到忘记时间，<strong style="color:#c0392b;">16:35 必须开始收拾</strong>，16:50 必须上车<br>
+      • <strong style="color:#c0392b;">Kisik 18:30 已预约，不能压线</strong>
+    </div>
+
+    <!-- BUDGET LINE -->
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:#666;padding:0.2rem 0">
+      <span>💰 全天预估 <strong style="color:#0a1a3a">~950,000 IDR</strong> <span style="color:#999;font-size:0.7rem">(≈ 437 RMB)</span></span>
+      <span style="font-size:0.65rem;color:#bbb">含门票 · 不含晚餐</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-info" style="flex-wrap:wrap;gap:0.2rem 0.6rem;padding:0.8rem 1.5rem;">
+    <div class="tip"><span class="tip-icon">🚗</span> 全日重点：只保留 Blue Point、情人崖、Melasti、Kisik，不再塞其他点</div>
+    <div class="tip"><span class="tip-icon">⏰</span> 16:35 Melasti 开始收拾，16:50 必须上车</div>
+    <div class="tip"><span class="tip-icon">🏨</span> 晚餐前不正式入住，只在 AYANA lobby 快速整理</div>
+    <div class="tip"><span class="tip-icon">🌅</span> 17:55–18:25 在 Kisik 附近看海景和晚霞</div>
+    <div class="tip"><span class="tip-icon">🍽️</span> Kisik 18:30 入座</div>
+    <div class="tip"><span class="tip-icon">🧳</span> 行李寄存在 AYANA，晚餐后再正式入住取行李</div>
+    <div class="price" style="width:100%;text-align:center;margin-top:0.2rem;">Selamat Jalan ✨</div>
+  </div>
+
+</div>
+</body>
+</html>

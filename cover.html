@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>巴厘岛毕业旅行 · 封面</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@200;300;400;500;700;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 800px;
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #0f0f1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .poster {
+    width: 760px;
+    background: #faf6ef;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    position: relative;
+  }
+
+  /* ---- Cover Background ---- */
+  .poster-bg {
+    position: relative;
+    padding: 3.5rem 3rem 3rem;
+    color: #fff;
+    overflow: hidden;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* Layered gradient background - modern, abstract, Bali-inspired */
+  .poster-bg .bg-layer {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, #0b8f8f 0%, #2db5b5 25%, #5fc9b0 45%, #b8d48a 65%, #f0c860 85%, #f5b84a 100%);
+    z-index: 0;
+  }
+
+  .poster-bg .bg-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 70% at 10% 90%, rgba(255,255,200,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 50% at 90% 10%, rgba(200,255,240,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 40% at 50% 50%, rgba(255,220,150,0.08) 0%, transparent 50%);
+  }
+
+  .poster-bg .bg-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      /* Subtle wave lines */
+      repeating-linear-gradient(
+        100deg,
+        transparent 0px,
+        transparent 40px,
+        rgba(255,255,255,0.015) 40px,
+        rgba(255,255,255,0.015) 41px
+      );
+  }
+
+  /* Decorative circles - modern design element */
+  .deco-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    z-index: 1;
+  }
+  .deco-ring.r1 {
+    width: 320px;
+    height: 320px;
+    top: -80px;
+    right: -60px;
+    border-width: 1.5px;
+  }
+  .deco-ring.r2 {
+    width: 200px;
+    height: 200px;
+    top: 40px;
+    right: 50px;
+    border-color: rgba(255,255,255,0.08);
+  }
+  .deco-ring.r3 {
+    width: 150px;
+    height: 150px;
+    bottom: -40px;
+    left: -30px;
+    border-color: rgba(255,255,255,0.10);
+  }
+  .deco-ring.r4 {
+    width: 80px;
+    height: 80px;
+    bottom: 30px;
+    left: 40px;
+    border-color: rgba(255,255,255,0.06);
+  }
+
+  /* Content */
+  .cover-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 1.2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  .poster h1 {
+    font-size: 3.4rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+  }
+  .poster h1 .sub {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 0.35em;
+    letter-spacing: 8px;
+    opacity: 0.5;
+    display: block;
+    margin-top: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .date-range {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    letter-spacing: 3px;
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+  }
+
+  .divider-line {
+    width: 40px;
+    height: 1.5px;
+    background: rgba(255,255,255,0.3);
+    margin: 0.8rem 0 1rem;
+  }
+
+  .destinations {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .destinations span {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    padding: 0.25rem 0.8rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  /* ---- Day List ---- */
+  .day-list {
+    padding: 2rem 3rem;
+    background: #faf6ef;
+  }
+
+  .day-item {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .day-item:last-child { border-bottom: none; }
+
+  .day-num {
+    width: 56px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a3a3a;
+    letter-spacing: 1px;
+  }
+  .day-num .dot { color: #c8a96e; }
+
+  .day-info {
+    flex: 1;
+  }
+  .day-info .title {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: #1a1a2e;
+  }
+  .day-info .subtitle {
+    font-size: 0.65rem;
+    color: #aaa;
+    margin-top: 0.05rem;
+  }
+
+  .day-icon {
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+    width: 28px;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .footer-cover {
+    background: #1a1a2e;
+    color: rgba(255,255,255,0.35);
+    padding: 1rem 2.5rem;
+    text-align: center;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    font-weight: 300;
+  }
+
+  @media print {
+    body { padding: 0; background: #fff; }
+    .poster { box-shadow: none; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="poster-bg">
+    <div class="bg-layer"></div>
+    <div class="deco-ring r1"></div>
+    <div class="deco-ring r2"></div>
+    <div class="deco-ring r3"></div>
+    <div class="deco-ring r4"></div>
+    <div class="cover-content">
+      <div class="badge">BALI · 2026</div>
+      <h1>
+        巴厘岛<br>毕业旅行
+        <div class="sub">Six Days in Paradise</div>
+      </h1>
+      <div class="divider-line"></div>
+      <div class="date-range">6.18 — 6.23</div>
+      <div class="destinations">
+        <span>Ubud</span>
+        <span>South Coast</span>
+        <span>Nusa Penida</span>
+        <span>AYANA</span>
+        <span>Hong Kong</span>
+        <span>Beijing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-list">
+    <div class="day-item">
+      <div class="day-icon">✈️</div>
+      <div class="day-num">D1</div>
+      <div class="day-info">
+        <div class="title">抵达巴厘岛</div>
+        <div class="subtitle">机场 → Ubud · Balinese Home Cooking</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">🌊</div>
+      <div class="day-num">D2</div>
+      <div class="day-info">
+        <div class="title">乌布一日</div>
+        <div class="subtitle">Tukad Cepung · Alas Harum · Monkey Forest · Ubud Center · Twist Dinner</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">🌅</div>
+      <div class="day-num">D3</div>
+      <div class="day-info">
+        <div class="title">南部海岸线</div>
+        <div class="subtitle">Blue Point · 情人崖 · Melasti · Kisik Dinner</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">💎</div>
+      <div class="day-num">D4</div>
+      <div class="day-info">
+        <div class="title">佩尼达岛</div>
+        <div class="subtitle">Diamond Beach · Eastside Lunch · Kelingking · 一日跳岛</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">🏨</div>
+      <div class="day-num">D5</div>
+      <div class="day-info">
+        <div class="title">AYANA 度假日</div>
+        <div class="subtitle">泳池 · 沙滩 · Spa · Rock Bar · 甘榜巴厘晚餐</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">🌴</div>
+      <div class="day-num">D6</div>
+      <div class="day-info">
+        <div class="title">AYANA 收尾日</div>
+        <div class="subtitle">自由补玩 · Spa · 整理行李 · 18:55 飞香港</div>
+      </div>
+    </div>
+    <div class="day-item">
+      <div class="day-icon">🏙️</div>
+      <div class="day-num">D7</div>
+      <div class="day-info">
+        <div class="title">香港中转</div>
+        <div class="subtitle">预约入校 · 机场午餐 · 13:55 飞北京 · 17:25 抵京</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-cover">✧ 用这段旅程，告别学生时代 ✧</div>
+
+</div>
+</body>
+</html>
